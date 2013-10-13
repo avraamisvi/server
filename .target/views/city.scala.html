@@ -1,0 +1,158 @@
+@(message: String)
+
+<script>
+	$( document ).ready(function() {
+		init();
+	});
+	
+	var img = new Image();
+	var canvas;
+	var stage;
+	var itemInserir;
+	var itemInserirImg;
+	var listGrid = [];
+	var preload;
+	var images = [];
+	
+	map = [0,1,2,3,4];
+	
+	var greenImgs = [
+	                 "@routes.Assets.at("images/chao_normal.png")",
+	                 "@routes.Assets.at("images/grama.png")",
+	                 "@routes.Assets.at("images/pedras.png")",
+	                 "@routes.Assets.at("images/arvore.png")",
+	                 "@routes.Assets.at("images/agua.png")"
+	             ];	
+	
+	function init() {
+		stage = new createjs.Stage("mainCanvas");
+		stage.enableMouseOver(20);
+		
+		canvas = document.getElementById("mainCanvas");
+		
+        /*if (preload != null) { 
+            preload.close(); 
+        }		
+		
+        preload = new createjs.PreloadJS();
+        preload.onFileLoad = handleFileLoad;
+        preload.onProgress = handleOverallProgress;
+        preload.onFileProgress = handleFileProgress;
+        preload.onError = handleFileError;
+        preload.setMaxConnections(5);     */           
+		img = new Image();
+		img.src = "@routes.Assets.at("images/grid.png")";
+		img.onload = handleImageLoad;
+    }
+
+	
+	// File complete handler
+    function handleFileLoad(event) {
+        
+        // Get a reference to the loaded image (<img/>)
+        var img = event.result;
+        
+        images.push(img);
+        // getting the images and their index for later sorting
+        //images[images.length] = {'src':String(String(event.src).toLowerCase()).replace('@routes.Assets.at("assets/image")','').replace('.png',''),'data':img};        
+    }
+
+    // File progress handler
+    function handleFileProgress(event) {
+    
+    }
+
+    // Overall progress handler
+    function handleOverallProgress(event) {
+        console.log('TOTAL: '+preload.progress);
+        var perc = preload.progress*100;
+        
+        if(perc >= 100) {
+        	criarMapa();
+        }
+    }
+
+//An error happened on a file
+    function handleFileError(event) {
+        console.log('error');
+    }	
+		
+    function criarMapa() {
+    	
+    }	
+	
+	
+	//OLD
+	function handleImageLoadItemInserir(event) {
+		data = {
+			     images: [itemInserirImg],
+			     frames: {width:64, height:64, regX: 0, regY:0},
+			     animations: {stoped:[0,0]}
+			 };
+		spriteSheet = new createjs.SpriteSheet(data);
+		itemInserir = new createjs.Sprite(spriteSheet);
+		stage.addChild(itemInserir);
+		
+		createjs.Ticker.addEventListener("tick", tick);
+	}
+		
+	function handleImageLoad(event) {
+		// grab canvas width and height for later calculations:
+		var w = canvas.width;
+		var h = canvas.height;
+		
+		var maxLines = h/16;
+		var maxCols = w/32;
+
+		data = {
+			     images: [img],
+			     frames: {width:64, height:32},//
+			     animations: {stoped:[0,0]}
+			 };
+		spriteSheet = new createjs.SpriteSheet(data);		
+		var x = 1;
+		var y = 1;
+		var desX = 0;
+		var desY = 0;
+		
+		for (i = 0; i < maxCols; i++) {
+			  for (j = 0; j < maxLines; j++) {
+				sprite = new createjs.Sprite(spriteSheet);								
+				
+	            x = i*64 + desX;
+	            y = j*32 + desY;
+				
+				sprite.x = x;
+				sprite.y = y;				
+			    sprite.addEventListener("rollover", function (event) {
+					if(itemInserir) {
+						itemInserir.x = event.target.x;
+						itemInserir.y = event.target.y;
+						//console.log(event);
+					}
+			    });				
+				
+			    stage.addChild(sprite);
+			  }
+			  
+			  desX = desX - 32;
+			  desY = desY - 16;
+			}				
+		
+		itemInserirImg = new Image();
+		itemInserirImg.src = "@routes.Assets.at("images/construindo_pequeno.png")";
+		itemInserirImg.onload = handleImageLoadItemInserir;
+	}
+	
+	function tick(event) {
+		stage.update(event);		
+	}	
+		
+</script>
+
+<canvas id="mainCanvas" width="1024" height="600">
+     alternate content
+</canvas>
+
+
+ 
