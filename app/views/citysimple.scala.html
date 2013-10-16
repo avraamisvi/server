@@ -1,0 +1,474 @@
+@(message: String)
+
+<div id="echo"></div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="span4">
+    	<button onclick="requestMap()">Show map</button>
+		<form>
+		  <fieldset>
+		    		    		    
+		    <label>Type</label>
+		    <input id="txtType" type="text">
+
+		    <label>Owner Type</label>
+		    <input id="txtOwnerType" type="text">
+		    
+		    <label>Jobs</label>
+		    <input id="txtJobs" type="text">		    
+
+		    <label>Employed</label>
+		    <input id="txtEmployed" type="text">
+		    
+			<label>Conservation</label>
+		    <input id="txtConservation" type="text">
+		    
+			<label>Built</label>
+		    <input id="txtBuilt" type="text">
+		    
+			<label>Cost</label>
+		    <input id="txtCost" type="text">
+		    
+		    <div id="houseDiv" style="display:none;">
+				<label>Class</label>
+			    <input id="txtClass" type="text">
+			    
+				<label>Entertainment</label>
+			    <input id="txtEntertainment" type="text">
+			    
+				<label>Wine</label>
+			    <input id="txtWine" type="text">
+			    
+				<label>Furniture</label>
+			    <input id="txtFurniture" type="text">
+			    
+				<label>meat</label>
+			    <input id="txtMeat" type="text">
+			    
+				<label>beans</label>
+			    <input id="txtBeans" type="text">
+			    
+				<label>rice</label>
+			    <input id="txtRice" type="text">
+			    
+				<label>cloths</label>
+			    <input id="txtCloths" type="text">
+			    
+				<label>citizenActive</label>
+			    <input id="txtCitizenActive" type="text">
+			    
+				<label>citizenChild</label>
+			    <input id="txtCitizenChild" type="text">
+			    
+				<label>withaJob</label>
+			    <input id="txtWithaJob" type="text">
+			    
+				<label>satisfaction</label>
+			    <input id="txtSatisfaction" type="text">
+				
+		    </div>	    		    		    		    		    		    
+		  </fieldset>
+		</form>
+    </div>
+    <div class="span18">
+      	<canvas id="mainCanvas" width="650" height="650">
+     		alternate content
+		</canvas>
+    </div>
+  </div>
+</div>
+
+
+<script>
+var stage;
+var canvas;
+var screePosition=[];
+var city;
+
+$( document ).ready(function() {
+	init();
+});
+
+
+function initializeScreePosition() {
+	max = 20;
+	i = 0;
+	j=0;	
+	for(i=1;i<=max;i++) {
+		for(j=1;j<=max;j++) {
+			x_ = i * 32;
+			y_= j * 32;
+			screePosition.push({x:x_, y:y_});
+		}
+	}
+}
+
+function init() {
+	
+	initializeScreePosition();
+	
+	stage = new createjs.Stage("mainCanvas");
+	stage.enableMouseOver(20);
+	canvas = document.getElementById("mainCanvas");
+  	createjs.Ticker.addEventListener("tick", tick);
+}
+
+function tick(event) {
+	stage.update(event);		
+}
+
+function createBlank(x, y) {	
+	
+	px = x*32;
+	py = y*32;
+	
+	var g = new createjs.Graphics(); 
+	g.setStrokeStyle(1); 
+	g.beginStroke(createjs.Graphics.getRGB(0,0,0)); 
+	g.beginFill(createjs.Graphics.getRGB(255,255,255)); 
+	g.drawRect(0,0,32,32);
+	
+	var s = new createjs.Shape(g);
+    s.x = px;
+    s.y = py;
+	s.addEventListener("rollover", function (event) {
+		var g = new createjs.Graphics();
+		g.setStrokeStyle(1); 
+		g.beginStroke(createjs.Graphics.getRGB(0,0,0)); 
+		g.beginFill(createjs.Graphics.getRGB(255,255,0)); 
+		g.drawRect(0,0,32,32);
+		
+		event.target.set({graphics:g});
+    });		
+	s.addEventListener("rollout", function (event) {
+		var g = new createjs.Graphics();
+		g.setStrokeStyle(1); 
+		g.beginStroke(createjs.Graphics.getRGB(0,0,0)); 
+		g.beginFill(createjs.Graphics.getRGB(255,255,255)); 
+		g.drawRect(0,0,32,32);
+		
+		event.target.set({graphics:g});
+    });		
+	
+  	stage.addChild(s);	
+}
+
+function showEstadoConstruction(event) {
+	constru = null;
+
+		try {
+				constru = city.constructions.houses[event.target.construction_index];
+			} catch (e) {
+			}
+		if (!constru)
+			try {
+				constru = city.constructions.farms[event.target.construction_index];
+			} catch (e) {
+			}
+		if (!constru)
+			try {
+				constru = city.constructions.policePosts[event.target.construction_index];
+			} catch (e) {
+			}
+
+		if (!constru)
+			try {
+				constru = city.constructions.firemanPosts[event.target.construction_index];
+			} catch (e) {
+			}
+
+		document.getElementById("txtType").value = constru.type;
+		document.getElementById("txtOwnerType").value = constru.ownerType;
+		document.getElementById("txtJobs").value = constru.avaliableJobs;
+		document.getElementById("txtEmployed").value = constru.employed;
+		document.getElementById("txtConservation").value = constru.conservation;
+		document.getElementById("txtBuilt").value = constru.built;
+		document.getElementById("txtClass").value = constru.familyClass;
+
+		document.getElementById("txtEntertainment").value = constru.entertainment;
+		document.getElementById("txtWine").value = constru.wine;
+		document.getElementById("txtFurniture").value = constru.furniture;
+		document.getElementById("txtMeat").value = constru.meat;
+		document.getElementById("txtBeans").value = constru.beans;
+		document.getElementById("txtRice").value = constru.rice;
+		document.getElementById("txtCloths").value = constru.cloths;
+		document.getElementById("txtCitizenActive").value = constru.citizenActive;
+		document.getElementById("txtCitizenChild").value = constru.citizenChild;
+		document.getElementById("txtWithaJob").value = constru.withaJob;
+		document.getElementById("txtSatisfaction").value = constru.satisfaction;
+
+		document.getElementById("houseDiv").style.display = "block";
+
+	}
+
+	function createShape(constru, index, color1, color2, onclick) {
+
+		var g = new createjs.Graphics();
+		g.setStrokeStyle(1);
+		g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
+		g.beginFill(createjs.Graphics.getRGB(255, 0, 0));
+		g.drawRect(0, 0, 32, 32);
+
+		var s = new createjs.Shape(g);
+		s.x = px;
+		s.y = py;
+		s.addEventListener("rollover", function(event) {
+			var g = new createjs.Graphics();
+			g.setStrokeStyle(1);
+			g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
+			g.beginFill(createjs.Graphics.getRGB(color2[0], color2[1],
+					color2[2]));
+			g.drawRect(0, 0, 32, 32);
+
+			event.target.set({
+				graphics : g
+			});
+		});
+		s.addEventListener("rollout", function(event) {
+			var g = new createjs.Graphics();
+			g.setStrokeStyle(1);
+			g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
+			g.beginFill(createjs.Graphics.getRGB(color1[0], color1[1],
+					color1[2]));
+			g.drawRect(0, 0, 32, 32);
+
+			event.target.set({
+				graphics : g
+			});
+		});
+
+		s.addEventListener("click", function(event) {
+			onclick(event)
+		});
+
+		s.set({
+			construction_index : index
+		});
+
+		return s;
+	}
+
+	function createHouse(data, index) {
+
+		px = data.mapSlots[0].x * 32;
+		py = data.mapSlots[0].y * 32;
+
+		var s = createShape(data, index, [ 255, 0, 0 ], [ 255, 159, 159 ],
+				showEstadoConstruction)
+		s.x = px;
+		s.y = py;
+		stage.addChild(s);
+	}
+
+	function createRoad(data, index) {
+		px = data.mapSlots[0].x * 32;
+		py = data.mapSlots[0].y * 32;
+
+		var g = new createjs.Graphics();
+		g.setStrokeStyle(1);
+		g.beginStroke(createjs.Graphics.getRGB(255, 204, 102));
+		g.beginFill(createjs.Graphics.getRGB(255, 204, 102));
+		g.drawRect(0, 0, 32, 32);
+
+		var s = new createjs.Shape(g);
+		s.x = px;
+		s.y = py;
+		s.addEventListener("rollover", function(event) {
+			var g = new createjs.Graphics();
+			g.setStrokeStyle(1);
+			g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
+			g.beginFill(createjs.Graphics.getRGB(255, 231, 182));
+			g.drawRect(0, 0, 32, 32);
+
+			event.target.set({
+				graphics : g
+			});
+		});
+		s.addEventListener("rollout", function(event) {
+			var g = new createjs.Graphics();
+			g.setStrokeStyle(1);
+			g.beginStroke(createjs.Graphics.getRGB(255, 204, 102));
+			g.beginFill(createjs.Graphics.getRGB(255, 204, 102));
+			g.drawRect(0, 0, 32, 32);
+
+			event.target.set({
+				graphics : g
+			});
+		});
+
+		stage.addChild(s);
+	}
+
+	function createPolice(data) {
+		px = data.mapSlots[0].x * 32;
+		py = data.mapSlots[0].y * 32;
+
+		var g = new createjs.Graphics();
+		g.setStrokeStyle(1);
+		g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
+		g.beginFill(createjs.Graphics.getRGB(91, 113, 255));
+		g.drawRect(0, 0, 32, 32);
+
+		var s = new createjs.Shape(g);
+		s.x = px;
+		s.y = py;
+		s.addEventListener("rollover", function(event) {
+			var g = new createjs.Graphics();
+			g.setStrokeStyle(1);
+			g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
+			g.beginFill(createjs.Graphics.getRGB(169, 181, 255));
+			g.drawRect(0, 0, 32, 32);
+
+			event.target.set({
+				graphics : g
+			});
+		});
+		s.addEventListener("rollout", function(event) {
+			var g = new createjs.Graphics();
+			g.setStrokeStyle(1);
+			g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
+			g.beginFill(createjs.Graphics.getRGB(91, 113, 255));
+			g.drawRect(0, 0, 32, 32);
+
+			event.target.set({
+				graphics : g
+			});
+		});
+
+		stage.addChild(s);
+	}
+
+	function createFireMan(data) {
+		px = data.mapSlots[0].x * 32;
+		py = data.mapSlots[0].y * 32;
+
+		var g = new createjs.Graphics();
+		g.setStrokeStyle(1);
+		g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
+		g.beginFill(createjs.Graphics.getRGB(230, 255, 0));
+		g.drawRect(0, 0, 32, 32);
+
+		var s = new createjs.Shape(g);
+		s.x = px;
+		s.y = py;
+		s.addEventListener("rollover", function(event) {
+			var g = new createjs.Graphics();
+			g.setStrokeStyle(1);
+			g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
+			g.beginFill(createjs.Graphics.getRGB(230, 255, 255));
+			g.drawRect(0, 0, 32, 32);
+
+			event.target.set({
+				graphics : g
+			});
+		});
+		s.addEventListener("rollout", function(event) {
+			var g = new createjs.Graphics();
+			g.setStrokeStyle(1);
+			g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
+			g.beginFill(createjs.Graphics.getRGB(230, 255, 0));
+			g.drawRect(0, 0, 32, 32);
+
+			event.target.set({
+				graphics : g
+			});
+		});
+
+		stage.addChild(s);
+	}
+
+	function createFarm(data) {
+		px = data.mapSlots[0].x * 32;
+		py = data.mapSlots[0].y * 32;
+
+		var g = new createjs.Graphics();
+		g.setStrokeStyle(1);
+		g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
+		g.beginFill(createjs.Graphics.getRGB(36, 182, 0));
+		g.drawRect(0, 0, 64, 64);
+
+		var s = new createjs.Shape(g);
+		s.x = px;
+		s.y = py;
+		s.addEventListener("rollover", function(event) {
+			var g = new createjs.Graphics();
+			g.setStrokeStyle(1);
+			g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
+			g.beginFill(createjs.Graphics.getRGB(36, 182, 255));
+			g.drawRect(0, 0, 64, 64);
+
+			event.target.set({
+				graphics : g
+			});
+		});
+		s.addEventListener("rollout", function(event) {
+			var g = new createjs.Graphics();
+			g.setStrokeStyle(1);
+			g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
+			g.beginFill(createjs.Graphics.getRGB(36, 182, 0));
+			g.drawRect(0, 0, 64, 64);
+
+			event.target.set({
+				graphics : g
+			});
+		});
+
+		stage.addChild(s);
+	}
+
+	function processMap() {
+		i = 0;
+		j = 0;
+
+		for (i = 0; i < 20; i++) {
+			for (j = 0; j < 20; j++) {
+				createBlank(j, i);
+			}
+		}
+
+		for (i = 0; i < city.constructions.roads.length; i++) {
+			createRoad(city.constructions.roads[i], i);
+		}
+
+		for (i = 0; i < city.constructions.houses.length; i++) {
+			createHouse(city.constructions.houses[i], i);
+		}
+
+		for (i = 0; i < city.constructions.farms.length; i++) {
+			createFarm(city.constructions.farms[i], i);
+		}
+
+		for (i = 0; i < city.constructions.firemanPosts.length; i++) {
+			createFireMan(city.constructions.firemanPosts[i], i);
+		}
+
+		for (i = 0; i < city.constructions.policePosts.length; i++) {
+			createPolice(city.constructions.policePosts[i], i);
+		}
+	}
+
+	var ws = new WebSocket("@routes.CityController.map().webSocketURL(request)");
+	ws.onopen = function() {
+	};
+	ws.onmessage = function(evt) {
+		var received_msg = evt.data;
+		//document.getElementById("echo").innerHTML = ""+received_msg;
+		console.log(received_msg);
+		city = JSON.parse(received_msg);
+		processMap();
+
+	};
+	ws.onclose = function() {
+		// websocket is closed.
+		console.debug("Connection is closed...");
+	};
+
+	function requestMap() {
+		showmap = {
+			name : "showmap"
+		}
+
+		ws.send(JSON.stringify(showmap));
+	}
+</script>
