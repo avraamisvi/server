@@ -1,5 +1,7 @@
 package services;
 
+import java.util.List;
+
 import model.City;
 import model.Gamer;
 import model.city.Construction;
@@ -16,13 +18,12 @@ public class CityLogicService {
 	
 	public CityLogicService(Gamer gamer) {
 		this.gamer = gamer;
-	}	
-	
+	}
 	
 	public void processJobs(City city) {
 		city.resetJobs();
-		
-		for (Construction constru : city.getConstructions() ) {			
+		List<Construction> construs = city.getConstructions().toList();
+		for (Construction constru :  construs) {			
 			if(constru != null)
 				constru.updateJobs(city);
 		}
@@ -45,8 +46,8 @@ public class CityLogicService {
 		city.setPopulation(0);//inicializa para calcular
 		city.setMaxPopulation(0);//inicializa para calcular		
 		
-		for (Construction constru : city.getConstructions() ) {	
-				
+		List<Construction> construs = city.getConstructions().toList();
+		for (Construction constru :  construs) {
 			if (constru != null) {
 				constru.update(gamer, city);
 				constru.printDebug();

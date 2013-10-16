@@ -3,12 +3,15 @@ package model;
 import java.util.List;
 
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
 import enums.FamilyClass;
+import model.city.Citizen;
 import model.city.CityMap;
 import model.city.Construction;
+import model.city.Constructions;
 
 @Entity
 public class City {
@@ -16,7 +19,7 @@ public class City {
 	/**
 	 * Gamer Id
 	 */
-	long gamerId;//FIXME
+	ObjectId gamerId;//FIXME
 	
 	String name;
 	
@@ -73,13 +76,13 @@ public class City {
 	/**
 	 * Goods total production (from this city)
 	 */
-	long entertainment = 1000;//AA
-	long wine = 1000;//A
-	long furniture = 200;//BA
-	long meat = 1000;//B
-	long beans = 1000;//C
-	long rice = 1000;//D
-	long cloths = 1000;//D	
+	int entertainment = 1000;//AA
+	int wine = 1000;//A
+	int furniture = 200;//BA
+	int meat = 1000;//B
+	int beans = 1000;//C
+	int rice = 1000;//D
+	int cloths = 1000;//D	
 	
 	
 	/**
@@ -115,14 +118,16 @@ public class City {
 	int SalaryC = 300;
 	int SalaryD = 100;	
 	
-	CityMap map = new CityMap();	
-	List<Construction> constructions;
+	CityMap map = new CityMap();
 	
-	public long getGamerId() {
+	@Embedded
+	Constructions constructions;
+	
+	public ObjectId getGamerId() {
 		return gamerId;
 	}
 
-	public void setGamerId(long gamerId) {
+	public void setGamerId(ObjectId gamerId) {
 		this.gamerId = gamerId;
 	}
 
@@ -304,11 +309,11 @@ public class City {
 
 	//GOODS
 	
-	public long getEntertainment() {
+	public int getEntertainment() {
 		return entertainment;
 	}
 
-	public void setEntertainment(long entertainment) {
+	public void setEntertainment(int entertainment) {
 		this.entertainment = entertainment;
 	}
 	
@@ -332,11 +337,11 @@ public class City {
 		return ret;			
 	}
 
-	public long getWine() {
+	public int getWine() {
 		return wine;
 	}
 
-	public void setWine(long wine) {
+	public void setWine(int wine) {
 		this.wine = wine;
 	}
 	
@@ -364,7 +369,7 @@ public class City {
 		return meat;
 	}
 
-	public void setMeat(long meat) {
+	public void setMeat(int meat) {
 		this.meat = meat;
 	}
 	
@@ -393,7 +398,7 @@ public class City {
 		return beans;
 	}
 
-	public void setBeans(long beans) {
+	public void setBeans(int beans) {
 		this.beans = beans;
 	}
 	
@@ -419,7 +424,7 @@ public class City {
 		return rice;
 	}
 
-	public void setRice(long rice) {
+	public void setRice(int rice) {
 		this.rice = rice;
 	}
 	
@@ -427,8 +432,8 @@ public class City {
 		this.rice += rice;
 	}
 	
-	public long decreaseRice(long rice) {
-		long ret = 0;
+	public int decreaseRice(int rice) {
+		int ret = 0;
 		
 		demandRice+=rice;
 		
@@ -447,7 +452,7 @@ public class City {
 		return cloths;
 	}
 
-	public void setCloths(long cloths) {
+	public void setCloths(int cloths) {
 		this.cloths = cloths;
 	}
 	
@@ -491,7 +496,7 @@ public class City {
 		return furniture;
 	}
 
-	public void setFurniture(long furniture) {
+	public void setFurniture(int furniture) {
 		this.furniture = furniture;
 	}
 	
@@ -574,6 +579,18 @@ public class City {
 		jobs=0;		
 	}
 
+	public void searchJobs(List<Citizen> citizens) {
+		List<Construction> cons = constructions.toList();
+		for(Citizen c : citizens) {
+			c.setSalary(0);
+			c.setWorks(0);
+			for(Construction con : cons) {
+				if(con.haveJob(c))
+					break;
+			}
+		}
+	}
+	
 	public int getPopulationExceded() {
 		return populationExceded;
 	}
@@ -764,11 +781,11 @@ public class City {
 		this.demandCloths = demandCloths;
 	}
 
-	public List<Construction> getConstructions() {
+	public Constructions getConstructions() {
 		return constructions;
 	}
-
-	public void setConstructions(List<Construction> constructions) {
+	
+	public void setConstructions(Constructions constructions) {
 		this.constructions = constructions;
 	}
 

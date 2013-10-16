@@ -24,7 +24,7 @@ public class Farm extends Construction{
 	
 	@Override
 	protected void updateHandle(Gamer gamer, City city) {
-		int force = employed*100/avaliableJobs;
+		int force = employed.size()*100/avaliableJobs;
 		produced = (force*production)/100;
 		
 		switch (typeProduction) {

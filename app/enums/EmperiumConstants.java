@@ -1,6 +1,6 @@
 package enums;
 
-public interface Constants {
+public interface EmperiumConstants {
 	int GAMER_TEST = 0;
 	int CITY_MAX_COLS = 20;
 	int CITY_MAX_ROWS = 20;
@@ -12,4 +12,8 @@ public interface Constants {
 	int HOUSE_CONSERVATION_COST_BA = 800;
 	int HOUSE_CONSERVATION_COST_A = 3000;
 	int HOUSE_CONSERVATION_COST_AA = 4000;
+	
+	int SECONDS_TO_BUILD = 2;
+	
+	String SHOW_MAP_MESSAGE_NAME = "showmap";
 }

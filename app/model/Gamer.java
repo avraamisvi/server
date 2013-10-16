@@ -1,11 +1,14 @@
 package model;
 
-import enums.Constants;
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
 
-
+@Entity
 public class Gamer {		
 	
-	int id = Constants.GAMER_TEST;
+     @Id
+	 ObjectId id;
 	
 	String empireName = "Test";
 	
@@ -61,11 +64,11 @@ public class Gamer {
 	boolean divorce;
 
 
-	public int getId() {
+	public ObjectId getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(ObjectId id) {
 		this.id = id;
 	}
 

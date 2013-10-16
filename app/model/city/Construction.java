@@ -1,31 +1,38 @@
 package model.city;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import model.City;
 import model.Gamer;
 
 import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
+import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
-import enums.Constants;
 import enums.ConstructionType;
+import enums.EmperiumConstants;
 import enums.OwnerType;
 
-@Entity
+@Embedded
 public abstract class Construction {
 	
-	@Id
-	ObjectId id;
-	
 	long mapPositionId;
+	
+	List<MapPositionPoint> mapSlots = new ArrayList<MapPositionPoint>(); 
 	
 	OwnerType ownerType;
 	
 	long savings;	
 	
-	Date startDate;
+	/**
+	 * Whe the construction was started.
+	 */
+	Date startDate = DateTime.now().toDate();
+	Date lastUpdate = DateTime.now().toDate();
 	
 	ConstructionType type;
 
@@ -56,12 +63,19 @@ public abstract class Construction {
 	 */
 	int conservationCost;
 	
-	int employed;//how many are employed
+	List<Citizen> employed;//how many are employed
+	
+	int salary;
 	
 	/**
 	 * Used for calculate how much the government will spend on public workers
 	 */
 	int generalCost = 100;
+		
+	
+//	public Construction() {
+//		super();		
+//	}
 	
 	protected void calculateSavingsTaxes(Gamer gamer, City city) {
 		if (this.getOwnerType().equals(OwnerType.enterprise)) {//calculate the taxes
@@ -71,7 +85,7 @@ public abstract class Construction {
 
 	public void decreaseConservation() {
 		if(conservation > 0) {
-			conservation = conservation- Constants.DEGRADATION_CONSEVATION_FACTOR;
+			conservation = conservation- EmperiumConstants.DEGRADATION_CONSEVATION_FACTOR;
 		}
 	}
 
@@ -91,16 +105,12 @@ public abstract class Construction {
 		return conservationCost;
 	}
 
-	public int getEmployed() {
+	public List<Citizen> getEmployed() {
 		return employed;
 	}
 
 	public int getGeneralCost() {
 		return generalCost;
-	}
-
-	public ObjectId getId() {
-		return id;
 	}
 
 	public OwnerType getOwnerType() {
@@ -121,7 +131,7 @@ public abstract class Construction {
 
 	public void increaseConservation() {
 		if(conservation < 100) {
-			conservation += Constants.DEGRADATION_CONSEVATION_FACTOR;
+			conservation += EmperiumConstants.DEGRADATION_CONSEVATION_FACTOR;
 		} else {
 			conservation = 100;
 		}
@@ -164,7 +174,7 @@ public abstract class Construction {
 		this.conservationCost = conservationCost;
 	}
 
-	public void setEmployed(int employed) {
+	public void setEmployed(List<Citizen> employed) {
 		this.employed = employed;
 	}
 	
@@ -172,10 +182,6 @@ public abstract class Construction {
 		this.generalCost = generalCost;
 	}
 
-	public void setId(ObjectId id) {
-		this.id = id;
-	}
-	
 	public void setOwnerType(OwnerType ownerType) {
 		this.ownerType = ownerType;
 	}
@@ -201,9 +207,24 @@ public abstract class Construction {
 	 */
 	public void update(Gamer gamer, City city) {
 		
+		lastUpdate = DateTime.now().toDate();
+		DateTime start = new DateTime(startDate);		
+		
+		if(this.getBuilt() < 100) {
+			DateTime now = DateTime.now();
+			if(now.isAfter(start.plusSeconds(EmperiumConstants.SECONDS_TO_BUILD))) {//TODO each construction has a time to build
+				this.built = 100;
+			} else {
+				DateTime targ = start.plusSeconds(EmperiumConstants.SECONDS_TO_BUILD);
+				int total = (int) (100*((float)start.getMillis()/(float)targ.getMillis()));
+				this.built = (int) total;
+			}
+						
+		}
+		
 		if (this.getBuilt() == 100 && this.conservation > 0) {
 						
-			employed = (int) city.decreaseUneployed(avaliableJobs);
+//			employed = (int) city.decreaseUneployed(avaliableJobs);
 			
 			this.updateHandle(gamer, city);//particular could differ in logic
 			this.calculateSavingsTaxes(gamer, city);
@@ -244,7 +265,9 @@ public abstract class Construction {
 	 * @param gamer
 	 * @param city
 	 */
-	protected abstract void updateHandle(Gamer gamer, City city);
+	protected void updateHandle(Gamer gamer, City city) {
+		
+	}
 
 	public void updateJobs(City city) {
 		if(working)
@@ -257,5 +280,39 @@ public abstract class Construction {
 
 	public void setMapPositionId(long mapPositionId) {
 		this.mapPositionId = mapPositionId;
+	}
+
+	public Date getLastUpdate() {
+		return lastUpdate;
+	}
+
+	public void setLastUpdate(Date lastUpdate) {
+		this.lastUpdate = lastUpdate;
+	}
+
+	public List<MapPositionPoint> getMapSlots() {
+		return mapSlots;
+	}
+
+	public void setMapSlots(List<MapPositionPoint> mapSlots) {
+		this.mapSlots = mapSlots;
+	}
+	
+	public boolean haveJob(Citizen citizen) {
+		if(employed == null)
+			employed = new ArrayList<Citizen>();
+		
+		if(employed.size() < avaliableJobs) {
+			employed.add(citizen);
+			citizen.setSalary(salary);
+			citizen.setWorks((int) mapPositionId);
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public void clearEmployed() {
+		employed = new ArrayList<Citizen>();
 	}
 }
