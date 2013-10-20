@@ -66,24 +66,29 @@ public class CreateTestBase {
 				if(cols[j].equals("h")) {
 					constru = new House();
 					constru.setMapPositionId(count);
+					construs.add(constru);
 				} else if(cols[j].equals("p")) {
 					constru = new PolicePost();
 					constru.setMapPositionId(count);
+					construs.add(constru);
 				} else if(cols[j].equals("f")) {
 					constru = new FiremanPost();
 					constru.setMapPositionId(count);
+					construs.add(constru);
 				} else if(cols[j].equals("F")) {
 					constru = farm;
-					if(farm.getMapPositionId() <= 0)
+					if(farm.getMapPositionId() <= 0) {
 						constru.setMapPositionId(count);
+						construs.add(constru);
+					}
 				} else if(cols[j].equals("r")) {
 					constru = new Road();
 					constru.setMapPositionId(count);
+					construs.add(constru);
 				}
 				
 				if(constru != null) {
 					constru.getMapSlots().add(new MapPositionPoint(j, i));
-					construs.add(constru);
 					map.getConstructions()[j][i] = constru.getMapPositionId();
 				}
 			}

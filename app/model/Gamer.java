@@ -63,7 +63,8 @@ public class Gamer {
 	boolean euthanasia;
 	boolean divorce;
 
-
+	Research researchs = new Research();
+	
 	public ObjectId getId() {
 		return id;
 	}
@@ -314,5 +315,12 @@ public class Gamer {
 	public void setTotalExpenses(long totalExpenses) {
 		this.totalExpenses = totalExpenses;
 	}
-	
+
+	public Research getResearchs() {
+		return researchs;
+	}
+
+	public void setResearchs(Research researchs) {
+		this.researchs = researchs;
+	}
 }

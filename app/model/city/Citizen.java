@@ -2,15 +2,14 @@ package model.city;
 
 import model.City;
 import model.Gamer;
-import enums.EmperiumConstants;
 import enums.FamilyClass;
 
 public class Citizen {
 	int id;
 	int home;//house he lives
-	int age = 20;//every citizen borns with 20 and die at 80
+	int age = 10;//every citizen borns with 20 and die at 80
 	int hungry;//if hungry reaches 100 he dies, next turn dies
-	int works;//his job place if -1 the he is not working
+	int works = -1;//his job place if -1 the he is not working
 	int salary;//10.000
 	
 	static int CLASS_AA_FACTOR = (100/7);
@@ -30,7 +29,7 @@ public class Citizen {
 //		salary=0;??
 	}
 	
-	public void evalFamilyClassUpgrade(City city) {
+	public void evalFamilyClassUpgrade(City city, House house) {
 		if(familyClass.equals(FamilyClass.A)) {
 			if(city.getSalaryAA() <= salary) {
 				this.familyClass = FamilyClass.AA;
@@ -59,7 +58,7 @@ public class Citizen {
 		return age > 70;
 	}
 	
-	public int procreate(City city, Gamer gamer) {
+	public int procreate(Gamer gamer, City city, House house) {
 		int child = 2;
 		
 		if(satisfaction <= 50) {
@@ -218,4 +217,49 @@ public class Citizen {
 		this.familyClass = familyClass;
 	}
 	
+	public boolean isDead() {
+		
+		if(hungry >= 100 || age > 70) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public boolean isRetired() {
+		return age > 60;
+	}
+	
+	public void update(Gamer gamer, City city, House house) {
+		
+		if(!isDead()) {
+			this.familyClass = house.familyClass;
+			
+			calculateSavingsTaxes(gamer, city, house);
+			//c.setSalary(0);
+			//c.setWorks(0);			
+		}
+		
+		if(satisfaction > 100) {
+			satisfaction = 100;
+		}
+	}
+	
+	public void searchJob(Gamer gamer, City city) {
+		city.searchJob(gamer, this);
+	}
+	
+	protected void calculateSavingsTaxes(Gamer gamer, City city, House house) {
+		
+		if(salary > 0) {		
+			long tax = (city.getCitizenTax()*salary)/100;
+			salary = (int) (salary-tax);
+			
+			house.savings+=salary;
+			
+			city.increaseTreasure(tax);
+			gamer.increaseTreasure(tax);
+		}
+		evalFamilyClassUpgrade(city, house);
+	}		
 }

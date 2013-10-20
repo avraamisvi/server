@@ -11,7 +11,6 @@ public class PolicePost extends Construction{
 		type = ConstructionType.PolicePost;
 		conservationCost = 10;
 		ownerType = OwnerType.national;
-		generalCost = 1200;
 		avaliableJobs = 4;
 	}
 
@@ -19,4 +18,20 @@ public class PolicePost extends Construction{
 	protected void updateHandle(Gamer gamer, City city) {
 		
 	}
+	
+	@Override
+	public boolean acceptEmploee(Gamer gamer, City city, Citizen citizen) {
+		
+		switch(citizen.familyClass) {
+			case D:
+				return true;
+			case C:
+				return true;
+			case B:
+				return true;				
+			default:
+		}
+		
+		return false;
+	}	
 }

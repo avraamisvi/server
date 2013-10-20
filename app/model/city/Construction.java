@@ -7,14 +7,12 @@ import java.util.List;
 import model.City;
 import model.Gamer;
 
-import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
 import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
 
 import enums.ConstructionType;
 import enums.EmperiumConstants;
+import enums.FamilyClass;
 import enums.OwnerType;
 
 @Embedded
@@ -27,6 +25,11 @@ public abstract class Construction {
 	OwnerType ownerType;
 	
 	long savings;	
+	
+	/**
+	 * 
+	 */
+	FamilyClass jobFamilyClass;
 	
 	/**
 	 * Whe the construction was started.
@@ -63,9 +66,7 @@ public abstract class Construction {
 	 */
 	int conservationCost;
 	
-	List<Citizen> employed;//how many are employed
-	
-	int salary;
+	List<Citizen> employed = new ArrayList<Citizen>();//how many are employed
 	
 	/**
 	 * Used for calculate how much the government will spend on public workers
@@ -74,12 +75,11 @@ public abstract class Construction {
 		
 	
 //	public Construction() {
-//		super();		
 //	}
 	
 	protected void calculateSavingsTaxes(Gamer gamer, City city) {
 		if (this.getOwnerType().equals(OwnerType.enterprise)) {//calculate the taxes
-			//TODO 
+			
 		}
 	}
 
@@ -110,7 +110,7 @@ public abstract class Construction {
 	}
 
 	public int getGeneralCost() {
-		return generalCost;
+		return generalCost;//salary+conservationcost
 	}
 
 	public OwnerType getOwnerType() {
@@ -150,8 +150,9 @@ public abstract class Construction {
 		System.out.println("Conservation:" + conservation);
 		System.out.println("Savings:" + savings);
 		System.out.println("Working:" + isWorking());
-		System.out.println("Employed:" + employed);
-		System.out.println("Cost:" + (generalCost+conservationCost));
+		System.out.println("Employed:" + employed.size());
+		System.out.println("generalCost:" + generalCost);
+		System.out.println("conservationCost:" + conservationCost);
 	}
 
 	public void setAvaliableJobs(int avaliableJobs) {
@@ -224,8 +225,6 @@ public abstract class Construction {
 		
 		if (this.getBuilt() == 100 && this.conservation > 0) {
 						
-//			employed = (int) city.decreaseUneployed(avaliableJobs);
-			
 			this.updateHandle(gamer, city);//particular could differ in logic
 			this.calculateSavingsTaxes(gamer, city);
 			
@@ -234,8 +233,7 @@ public abstract class Construction {
 					savings += gamer.decreaseTreasure(conservationCost);
 					savings += gamer.decreaseTreasure(generalCost);
 					
-					city.increaseExpenses(conservationCost);
-					city.increaseExpenses(generalCost);
+					city.increaseExpenses(generalCost + conservationCost);
 				}
 			} 
 			
@@ -246,11 +244,18 @@ public abstract class Construction {
 				savings = savings - conservationCost;
 			}
 
-			if (savings < generalCost) {
+			/*if (savings < generalCost) {
 				working = false;
 			} else {
 				working = true;
 				savings = savings - generalCost;
+			}*/
+			
+			if (savings > generalCost) {
+//				working = true;
+				savings = savings - generalCost;
+			} else {
+				savings = 0;
 			}
 		}
 		
@@ -269,9 +274,12 @@ public abstract class Construction {
 		
 	}
 
-	public void updateJobs(City city) {
-		if(working)
+	public void updateJobs(Gamer gamer, City city) {
+		if(working) {
+			calculateGeneralCost();//before clear
 			city.increaseJobs(avaliableJobs);
+			this.clearEmployed();
+		}
 	}
 
 	public long getMapPositionId() {
@@ -298,21 +306,61 @@ public abstract class Construction {
 		this.mapSlots = mapSlots;
 	}
 	
-	public boolean haveJob(Citizen citizen) {
-		if(employed == null)
-			employed = new ArrayList<Citizen>();
-		
-		if(employed.size() < avaliableJobs) {
-			employed.add(citizen);
-			citizen.setSalary(salary);
-			citizen.setWorks((int) mapPositionId);
-			return true;
+	public boolean acceptEmploee(Gamer gamer, City city, Citizen citizen) {
+		return citizen.familyClass.equals(jobFamilyClass);
+	}
+	
+	public boolean haveJob(Gamer gamer, City city, Citizen citizen) {
+		if(working) {
+			if(employed == null)
+				employed = new ArrayList<Citizen>();
+			
+			if(employed.size() < avaliableJobs) {
+				if(acceptEmploee(gamer, city, citizen)) {
+					employed.add(citizen);
+					payEmployees(citizen, city);
+					citizen.setWorks((int) mapPositionId);
+					return true;
+				}
+			}
 		}
-		
 		return false;
+	}
+	
+	public void calculateGeneralCost() {
+		generalCost = 0;
+		for(Citizen c : employed) {
+			generalCost += c.getSalary(); 
+		}
 	}
 	
 	public void clearEmployed() {
 		employed = new ArrayList<Citizen>();
 	}
+	
+	public int payEmployees(Citizen c, City city) {
+		
+		switch (c.familyClass) {
+		case AA:
+			c.setSalary(city.getSalaryAA());
+			break;
+		case A:
+			c.setSalary(city.getSalaryA());
+			break;
+		case BA:
+			c.setSalary(city.getSalaryBA());
+			break;
+		case B:
+			c.setSalary(city.getSalaryB());
+			break;
+		case C:
+			c.setSalary(city.getSalaryC());
+			break;
+		case D:
+			c.setSalary(city.getSalaryD());
+			break;
+		}
+		
+		return c.getSalary();
+	}	
 }

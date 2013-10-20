@@ -15,5 +15,6 @@ public enum ConstructionType {
 	,Industry
 	,Farm
 	,Busisness
+	,Cloths
 	,none
 }

@@ -3,16 +3,15 @@ package model.city;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mongodb.morphia.annotations.Embedded;
-
-import com.sun.jna.platform.win32.WinUser.WNDENUMPROC;
-
-import enums.EmperiumConstants;
-import enums.ConstructionType;
-import enums.FamilyClass;
-import enums.OwnerType;
 import model.City;
 import model.Gamer;
+
+import org.mongodb.morphia.annotations.Embedded;
+
+import enums.ConstructionType;
+import enums.EmperiumConstants;
+import enums.FamilyClass;
+import enums.OwnerType;
 
 @Embedded
 public class House extends Construction{
@@ -31,6 +30,8 @@ public class House extends Construction{
 	int citizenChild;//child citizens unavailable to work, indice de quantos filhos nascen para virarem força ativa
 	
 	int satisfaction;//satisfaction level 1-100; 1 = angry, 100 = happy 
+
+	public int exceeded;
 	
 	public House() {
 		type = ConstructionType.House;
@@ -91,6 +92,15 @@ public class House extends Construction{
 	}
 
 	public int getSatisfaction() {
+		satisfaction = 0;
+		if (citizens.size() > 0) {
+			for (Citizen cit : citizens) {
+				satisfaction += cit.satisfaction;
+			}
+
+			satisfaction = satisfaction / citizens.size();
+		}
+
 		return satisfaction;
 	}
 
@@ -114,6 +124,95 @@ public class House extends Construction{
 		this.familyClass = familyClass;
 	}
 
+	private void updateCitizens(Gamer gamer, City city) {
+		
+		Citizen [] cits = citizens.toArray(new Citizen[0]);
+		List<Citizen> listCitizens = new ArrayList<Citizen>();
+		
+		this.citizenChild = 0;
+		
+		satisfaction = 0;
+		int total = 0;
+		
+		int _cloths = cloths;
+		int _rice= rice;
+		int _beans= beans;
+		int _meat= meat;
+		int _furniture= furniture;
+		int _wine = wine;
+		int _entertainment= entertainment;			
+		
+		for (Citizen c : cits) {
+			
+			c.satisfaction = 0;
+			
+			if(_cloths > 0) {
+				_cloths--;
+				c.wear();
+			}
+			
+			if(_rice > 0) {
+				_rice--;
+				c.eatRice();
+			}
+			
+			if(_beans > 0) {
+				_beans--;
+				c.eatBeans();
+			}
+			
+			if(_meat> 0) {
+				_meat--;
+				c.eatMeat();
+			}
+			
+			if(_furniture> 0) {
+				_furniture--;
+				c.obtainFurniture();
+			}
+			
+			if(_wine> 0) {
+				_wine--;
+				c.drinkWine();
+			}
+			
+			if(_entertainment> 0) {
+				_entertainment--;
+				c.entertain();
+			}
+			
+			this.citizenChild += c.procreate(gamer, city, this);
+			
+			if(!c.isDead()) {
+				c.id = listCitizens.size();
+				listCitizens.add(c);
+				total++;				
+			} else {
+				System.out.println("Cidadão morreu:" + c.id + " Casa:" + this.mapPositionId);
+			}
+			
+			c.calculateAge();
+			c.update(gamer, city, this);
+			
+		}
+		
+		this.citizens = listCitizens;
+		int i = 0;
+		for (i = 0; i < this.citizenChild; i++) {
+			if(getHousePopulation() >= getMaxPopulation()) {
+				break;
+			}
+			Citizen c = new Citizen();
+			c.home = (int) this.mapPositionId;
+			c.id = this.citizens.size();
+			c.familyClass = familyClass;
+			this.citizens.add(c);
+			System.out.println("Cidadão nasceu:" + c.id + " Casa:" + this.mapPositionId);
+		}
+		
+		exceeded = this.citizenChild-i; 
+	}
+	
 	@Override
 	protected void updateHandle(Gamer gamer, City city) {
 		
@@ -127,41 +226,19 @@ public class House extends Construction{
 			this.beans=0;//C
 			this.rice=0;//D
 			this.cloths=0;
+		} else {
+			
+			calculateConsumeGoods(city);
+			
+			if(getHousePopulation() <= 0) {
+				this.savings = 0;
+			}
+			
+			updateCitizens(gamer,city);
+			
+			city.increasePopulation(this.getHousePopulation());
+			evalFamilyClassUpgrade(city);
 		}
-		
-		if(getHousePopulation() <= 0) {
-			this.savings = 0;
-		}
-		
-		calculateSatisfaction();
-		calculateBirth(city, gamer);
-		calculateAdultAndDeath(city, gamer);
-		
-		city.increasePopulation(this.getHousePopulation());
-		city.searchJobs(citizens);
-	}
-	
-	@Override
-	protected void calculateSavingsTaxes(Gamer gamer, City city) {
-		
-		if(getHousePopulation() <= 0) {
-			return;
-		}
-		
-		for(Citizen c : citizens) {
-			if(c.salary > 0) {		
-				long tax = (city.getCitizenTax()*c.salary)/100;
-				c.salary = (int) (c.salary-tax);
-				
-				this.savings+=c.salary;
-				
-				city.increaseTreasure(tax);
-				gamer.increaseTreasure(tax);
-			}			
-		}
-		
-		evalFamilyClassUpgrade(city);
-		calculateConsumeGoods(city);
 	}
 	
 	private void evalFamilyClassUpgrade(City city) {
@@ -235,51 +312,6 @@ public class House extends Construction{
 			furniture= (int) city.decreaseFurniture(furniture);
 			wine = (int) city.decreaseWine(wine);
 			entertainment= (int) city.decreaseEntertainment(entertainment);
-			
-			int _cloths = cloths;
-			int _rice= rice;
-			int _beans= beans;
-			int _meat= meat;
-			int _furniture= furniture;
-			int _wine = wine;
-			int _entertainment= entertainment;			
-			
-			for (Citizen c : citizens) {
-				if(_cloths > 0) {
-					_cloths--;
-					c.wear();
-				}
-				
-				if(_rice > 0) {
-					_rice--;
-					c.eatRice();
-				}
-				
-				if(_beans > 0) {
-					beans--;
-					c.eatBeans();
-				}
-				
-				if(_meat> 0) {
-					_meat--;
-					c.eatMeat();
-				}
-				
-				if(_furniture> 0) {
-					_furniture--;
-					c.obtainFurniture();
-				}
-				
-				if(_wine> 0) {
-					_wine--;
-					c.drinkWine();
-				}
-				
-				if(_entertainment> 0) {
-					_entertainment--;
-					c.entertain();
-				}				
-			}
 		}
 	}
 	
@@ -361,39 +393,21 @@ public class House extends Construction{
 		return ret;
 	}
 	
-	private void calculateAdultAndDeath(City city, Gamer gamer) {
-		ArrayList<Citizen> cits = new ArrayList<Citizen>();
-		
-		for (Citizen citizen : citizens) {
-			if(!citizen.calculateAge()) {
-				cits.add(citizen);
-			}
-		}
-		
-		citizens = cits;
-	}
-	
-	private void calculateBirth(City city, Gamer gamer) {
-		this.citizenChild = 0;
-		int exceeded = 0;
-		for (Citizen citizen : citizens) {			
-			if(this.citizenChild < getMaxPopulation()) {
-				this.citizenChild += citizen.procreate(city, gamer);
-			} else {
-				exceeded+=citizen.procreate(city, gamer);
-			}
-		}
-		
-		city.setPopulationExceded(city.getPopulationExceded()+exceeded);
-				
-	}
+//	private void calculateDeath(City city, Gamer gamer) {
+//		ArrayList<Citizen> cits = new ArrayList<Citizen>();
+//		
+//		for (Citizen citizen : citizens) {
+//			if(!citizen.calculateAge()) {
+//				citizen.id=cits.size();
+//				cits.add(citizen);
+//			}
+//		}
+//		
+//		citizens = cits;
+//	}
 	
 	public int getHousePopulation() {
 		return citizens.size();
-	}
-	
-	public void calculateSatisfaction() {
-		//satisfaction
 	}
 	
 	public int getWine() {
@@ -452,11 +466,20 @@ public class House extends Construction{
 		this.citizens = citizens;
 	}
 
+	@Override
+	public void setMapPositionId(long mapPositionId) {
+		super.setMapPositionId(mapPositionId);
+		
+		for(Citizen c : citizens) {
+			c.home = (int) mapPositionId;
+		}
+	}
+	
 	public void printDebug() {
 		
 		super.printDebug();
 		
-		System.out.println("Satisfaction:" + satisfaction);
+		System.out.println("Satisfaction:" + getSatisfaction());
 		System.out.println("HousePolulation:" + getHousePopulation());
 		System.out.println("CitizenChild:" + citizenChild);
 		System.out.println("WithaJob:" + getWithaJob());
@@ -466,9 +489,20 @@ public class House extends Construction{
 		System.out.println("cloths:" + cloths);
 		System.out.println("rice:" + entertainment);
 		System.out.println("beans:" + furniture);
-		System.out.println("cloths:" + wine);
-		System.out.println("cloths:" + meat);
+		System.out.println("wine:" + wine);
+		System.out.println("meat:" + meat);
 		System.out.println("Class:" + familyClass.name());
+	}
+	
+	@Override
+	public void updateJobs(Gamer gamer, City city) {
+		if(conservation > 0) {
+			for (Citizen c : citizens) {
+				if(!c.isDead()) {// && !c.isRetired()
+					c.searchJob(gamer, city);
+				}
+			}
+		}
 	}
 	
 	class Prices {

@@ -11,7 +11,6 @@ public class FiremanPost extends Construction{
 		type = ConstructionType.FiremanPost;
 		ownerType = OwnerType.national;
 		conservationCost = 10;
-		generalCost = 1200;
 		avaliableJobs = 4;
 	}
 
@@ -20,4 +19,18 @@ public class FiremanPost extends Construction{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public boolean acceptEmploee(Gamer gamer, City city, Citizen citizen) {
+		
+		switch(citizen.familyClass) {
+			case D:
+				return true;
+			case C:
+				return true;				
+			default:
+		}
+		
+		return false;
+	}	
 }

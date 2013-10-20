@@ -7,11 +7,17 @@ import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import controllers.serializers.ObjectIdString;
+import enums.ConstructionType;
+import enums.EmperiumConstants;
 import enums.FamilyClass;
 import model.city.Citizen;
 import model.city.CityMap;
 import model.city.Construction;
 import model.city.Constructions;
+import model.city.House;
 
 @Entity
 public class City {
@@ -27,6 +33,7 @@ public class City {
 	 * Own Id
 	 */
 	@Id
+	@JsonSerialize(using=ObjectIdString.class)
 	ObjectId id;
 	
 	/**
@@ -42,7 +49,7 @@ public class City {
 	/**
 	 * Percent
 	 */
-	long industryTax = 10;
+	long industryTax = 30;
 	
 	/**
 	 * Percent
@@ -65,20 +72,20 @@ public class City {
 	/**
 	 * Goods price
 	 */	
-	long entertainmentPrice = 500;//AA
-	long winePrice = 300;//A 
-	long furniturePrice = 200;//BA
-	long meatPrice = 200;//B
-	long beansPrice = 100;//C
-	long ricePrice = 50;//D
-	long clothsPrice = 10;//D	
+	long entertainmentPrice = 100;//AA
+	long winePrice = 37;//A 
+	long furniturePrice = 14;//BA
+	long meatPrice = 11;//B
+	long beansPrice = 8;//C
+	long ricePrice = 3;//D
+	long clothsPrice = 1;//D	
 	
 	/**
 	 * Goods total production (from this city)
 	 */
 	int entertainment = 1000;//AA
 	int wine = 1000;//A
-	int furniture = 200;//BA
+	int furniture = 1000;//BA
 	int meat = 1000;//B
 	int beans = 1000;//C
 	int rice = 1000;//D
@@ -111,12 +118,12 @@ public class City {
 	 * Salaries, the salaries suffer variations according to the economy balance.
 	 * TODO for while fixed
 	 */
-	int SalaryAA = 10000;
-	int SalaryA = 4000;
-	int SalaryBA = 1000;
-	int SalaryB = 800;
-	int SalaryC = 300;
-	int SalaryD = 100;	
+	int SalaryAA = 1620;
+	int SalaryA = 540;
+	int SalaryBA = 180;
+	int SalaryB = 90;
+	int SalaryC = 30;
+	int SalaryD = 10;	
 	
 	CityMap map = new CityMap();
 	
@@ -562,34 +569,36 @@ public class City {
 	}
 	
 	public long decreaseJobs(int une) {
-		long ret = 0;
-		
-		if(this.jobs > une) {
-			this.jobs -= une;
-			ret = une;
-		} else {
-			ret = this.jobs;
-			this.jobs = 0;
-		}
-		return ret;
+//		long ret = 0;
+//		
+//		if(this.jobs > une) {
+//			this.jobs -= une;
+//			ret = une;
+//		} else {
+//			ret = this.jobs;
+//			this.jobs = 0;
+//		}
+		return 0;
 	}
 
 	public void resetJobs() {
 		uneployed=0;
 		jobs=0;		
 	}
-
-	public void searchJobs(List<Citizen> citizens) {
+	
+	public void searchJob(Gamer gamer, Citizen citizen) {
 		List<Construction> cons = constructions.toList();
-		for(Citizen c : citizens) {
-			c.setSalary(0);
-			c.setWorks(0);
-			for(Construction con : cons) {
-				if(con.haveJob(c))
+		citizen.setSalary(0);
+		citizen.setWorks(EmperiumConstants.CITIZEN_NOT_WORK);
+		for(Construction con : cons) {
+			if(con.getAvaliableJobs() > 0) {
+				if(con.haveJob(gamer, this, citizen)) {
+					System.out.println("Cidadão empregado:" + citizen.getId() + " Casa:" + citizen.getHome());
 					break;
+				}
 			}
 		}
-	}
+	}	
 	
 	public int getPopulationExceded() {
 		return populationExceded;
@@ -795,5 +804,18 @@ public class City {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	//TODO melhorar	
+	public void updateIndices() {
+		List<Construction> cons = getConstructions().toList();
+		resetJobs();
+		population = 0;
+		for(Construction c : cons) {
+			if(c.getType().equals(ConstructionType.House)) {
+				population += ((House)c).getHousePopulation();
+			}
+			jobs += c.getAvaliableJobs();
+		}
 	}
 }

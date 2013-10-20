@@ -20,14 +20,16 @@ public class CityLogicService {
 		this.gamer = gamer;
 	}
 	
-	public void processJobs(City city) {
+	public void processJobs(Gamer gamer, City city) {
 		city.resetJobs();
 		List<Construction> construs = city.getConstructions().toList();
 		for (Construction constru :  construs) {			
-			if(constru != null)
-				constru.updateJobs(city);
+			constru.updateJobs(gamer, city);
 		}
-		
+////		city.updateIndices();
+////		
+////		printDebug(city);
+//		System.out.println("==============================================");
 	}
 	
 	/**
@@ -35,9 +37,9 @@ public class CityLogicService {
 	 * @param city
 	 * @param gamer
 	 */
-	public void processEconomyTaxes(City city) {
+	public void processEconomyTaxes(Gamer gamer, City city) {
 		
-		processJobs(city);
+		processJobs(gamer, city);
 		
 		//needed for recreate the currently treasure contribution
 		city.resetTreasure();
@@ -54,8 +56,11 @@ public class CityLogicService {
 			}
 		}
 		
-		gamer.increaseExpenses(city.getTreasureExpenses());
+		city.updateIndices();
+
+		printDebug(city);
 		
+		gamer.increaseExpenses(city.getTreasureExpenses());
 		gamer.increaseBeans(city.getBeans());
 		gamer.increaseCloths(city.getCloths());
 		gamer.increaseEntertainment(city.getEntertainment());
@@ -63,7 +68,9 @@ public class CityLogicService {
 		gamer.increaseMeat(city.getMeat());
 		gamer.increaseWine(city.getWine());
 		gamer.increaseRice(city.getRice());
-		
+	}
+	
+	public void printDebug(City city) {
 		System.out.println("-------------CITY ID ------------------");
 		System.out.println("City Treasure Contribution: " + city.getTreasureContribution());
 		System.out.println("City Treasure Expenses: " + city.getTreasureExpenses());		
@@ -74,5 +81,20 @@ public class CityLogicService {
 		System.out.println("Entertainment Demand: " + city.getDemandEntertainment());
 		System.out.println("Furniture Demand: " + city.getDemandFurniture());
 		System.out.println("Wine Demand: " + city.getDemandWine());
+		
+		System.out.println("Wine: " + city.getWine());
+		System.out.println("Rice: " + city.getRice());
+		System.out.println("Beans: " + city.getBeans());
+		System.out.println("Cloths: " + city.getCloths());
+		System.out.println("Entertainment: " + city.getEntertainment());
+		System.out.println("Furniture: " + city.getFurniture());
+		
+		System.out.println("Population: " + city.getPopulation());
+		System.out.println("Jobs: " + city.getJobs());
+		
+		if(city.getPopulation() < city.getJobs())
+			System.out.println("Vagas: " + (city.getJobs() - city.getPopulation()));
+		else		
+			System.out.println("Uneployed: " + (city.getPopulation() - city.getJobs()));		
 	}
 }

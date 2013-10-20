@@ -7,20 +7,20 @@ import enums.EmperiumConstants;
 import enums.GoodsTypeProduction;
 import enums.OwnerType;
 
-public class Farm extends Construction{
+public class ClothsFabric extends Construction{
 
 	GoodsTypeProduction typeProduction;
 	int production;
 	int produced;
 	long gain;
 	
-	public Farm() {
-		type = ConstructionType.Farm;
+	public ClothsFabric() {
+		type = ConstructionType.Cloths;
 		ownerType = OwnerType.enterprise;
-		conservationCost = EmperiumConstants.FARM_CONSERVATION_COST;
-		avaliableJobs = 8;		
-		typeProduction = GoodsTypeProduction.rice;
-		production = 36;
+		conservationCost = EmperiumConstants.CLOTHS_CONSERVATION_COST;
+		avaliableJobs = 4;		
+		typeProduction = GoodsTypeProduction.cloths;
+		production = 48;
 		working=true;
 	}
 	
@@ -28,46 +28,14 @@ public class Farm extends Construction{
 	protected void updateHandle(Gamer gamer, City city) {
 		int force = employed.size()*100/avaliableJobs;
 		produced = (force*production)/100;
-		
-		switch (typeProduction) {
-			case rice:
-				city.increaseRice(produced);
-				break;
-				
-			case beans:
-				city.increaseBeans(produced);
-				break;
-				
-			case meat:
-				city.increaseMeat(produced);
-				break;
-				
-			default:
-				break;
-		}
-		
+		city.increaseCloths(produced);
 	}
 	
 	protected void calculateSavingsTaxes(Gamer gamer, City city) {		
 		
 		gain = 0;
 		
-		switch (typeProduction) {
-			case rice:
-				gain = produced * city.getRicePrice(); 
-				break;
-				
-			case beans:
-				gain = produced * city.getRicePrice();
-				break;
-				
-			case meat:
-				gain = produced * city.getRicePrice();
-				break;
-				
-			default:
-				break;
-		}
+		gain = produced * city.getClothsPrice();
 		
 		long tax = (city.getIndustryTax()*gain)/100;
 		gain = gain-tax;
@@ -81,9 +49,11 @@ public class Farm extends Construction{
 	@Override
 	public boolean acceptEmploee(Gamer gamer, City city, Citizen citizen) {
 		
-		if(typeProduction.equals(GoodsTypeProduction.rice)) {
+		if(gamer.getResearchs().getIndustryLevel() > 0) {
 			switch(citizen.familyClass) {
-				case D:
+				case C:
+					return true;
+				case B:
 					return true;
 				default:
 			}
@@ -91,10 +61,8 @@ public class Farm extends Construction{
 			switch(citizen.familyClass) {
 				case D:
 					return true;
-				case C:
-					return true;
 				default:
-			}
+			}			
 		}
 		
 		return false;
@@ -129,4 +97,5 @@ public class Farm extends Construction{
 		super.printDebug();
 		System.out.println("Gain:" + gain);
 	}
+
 }

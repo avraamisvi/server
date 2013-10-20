@@ -7,5 +7,6 @@ public enum GoodsTypeProduction {
 	meat,
 	beans,
 	rice,
+	grapes,
 	cloths
 }

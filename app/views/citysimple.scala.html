@@ -5,8 +5,20 @@
 <div class="container-fluid">
   <div class="row">
     <div class="span4">
+    	<button onclick="endTurn()">End Turn</button>
     	<button onclick="requestMap()">Show map</button>
-		<form>
+
+<div class="tabbable">
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="#pane1" data-toggle="tab">Status</a></li>
+    <li><a href="#pane2" data-toggle="tab">Cons</a></li>
+    <li><a href="#pane3" data-toggle="tab">City</a></li>
+    <li><a href="#pane4" data-toggle="tab">Country</a></li>
+  </ul>
+  <div class="tab-content">
+    <div id="pane1" class="tab-pane active">
+
+	<form>
 		  <fieldset>
 		    		    		    
 		    <label>Type</label>
@@ -29,6 +41,9 @@
 		    
 			<label>Cost</label>
 		    <input id="txtCost" type="text">
+		    
+			<label>Saving</label>
+		    <input id="txtSavings" type="text">				    
 		    
 		    <div id="houseDiv" style="display:none;">
 				<label>Class</label>
@@ -66,10 +81,54 @@
 			    
 				<label>satisfaction</label>
 			    <input id="txtSatisfaction" type="text">
+			    
+		    </div>	 
+		    
+			<div id="fireDiv" style="display:none;">			
+			    				
+			</div>
+			
+			<div id="policeDiv" style="display:none;">
 				
-		    </div>	    		    		    		    		    		    
+			</div>
+						
+			<div id="farmDiv" style="display:none;">
+				<label>Produced</label>
+			    <input id="txtProduced" type="text">
+			    
+				<label>Max Production</label>
+			    <input id="txtMaxProduction" type="text">
+			    			    	
+				<label>Type Production</label>
+			    <input id="txtTypeProduction" type="text">			    	
+			</div>			
+					       		    		    		    		    		    
 		  </fieldset>
 		</form>
+
+
+    </div>
+    <div id="pane2" class="tab-pane">
+    <h4>Constructions Pallet</h4>
+    	<button onclick="newHouse()">New House</button>
+    	<button onclick="newFarmRice()">New Farm Rice</button>
+    	<button onclick="newFarmBeans()">New Farm Beans</button>
+    	<button onclick="newFarmMeat()">New Farm Meat</button>
+    	<button onclick="newFarmGrapes()">New Farm Grapes</button>
+    	<button onclick="newPolice()">New PolicPost</button>
+    	<button onclick="newFireman()">New FiremanPost</button>
+    	<button onclick="newCloths()">New Cloths Fabric</button>
+    </div>
+    <div id="pane3" class="tab-pane">
+      <h4>Pane 3 Content</h4>
+    </div>
+    <div id="pane4" class="tab-pane">
+      <h4>Pane 4 Content</h4>
+    </div>
+  </div><!-- /.tab-content -->
+</div>
+
+		 
     </div>
     <div class="span18">
       	<canvas id="mainCanvas" width="650" height="650">
@@ -84,7 +143,13 @@
 var stage;
 var canvas;
 var screePosition=[];
+var soil_blocks = [];
 var city;
+var cursor;
+var typesProd;
+
+var create = false;
+var createWhat = "";
 
 $( document ).ready(function() {
 	init();
@@ -112,16 +177,62 @@ function init() {
 	stage.enableMouseOver(20);
 	canvas = document.getElementById("mainCanvas");
   	createjs.Ticker.addEventListener("tick", tick);
+  	
+  	createCursor();
 }
 
 function tick(event) {
-	stage.update(event);		
+	calculateCursorPosition(stage.mouseX, stage.mouseY);
+	
+	stage.update(event);	
+}
+
+function createCursor() {
+	var g = new createjs.Graphics(); 
+	g.setStrokeStyle(1); 
+	g.beginStroke(createjs.Graphics.getRGB(0,0,0)); 
+	g.beginFill(createjs.Graphics.getRGB(255,255,0)); 
+	g.drawRect(0,0,32,32);
+	
+	cursor = new createjs.Shape(g);
+	cursor.x = 0;
+	cursor.y = 0;
+    
+	cursor.addEventListener("click", function (event) {
+		if(create) {			
+			sendCreateConstruction([event.target.x/32, event.target.y/32]);
+			create = false;
+			createWhat = "";
+			adjustCursor(32,32,[255,255,0]);
+		}		
+    });	
+	
+    stage.addChild(cursor);
+}
+
+function adjustCursor(w,h, color) {
+	var g = new createjs.Graphics(); 
+	g.setStrokeStyle(1); 
+	g.beginStroke(createjs.Graphics.getRGB(0,0,0)); 
+	g.beginFill(createjs.Graphics.getRGB(color[0],color[1],color[2])); 
+	g.drawRect(0,0,w,h);
+	
+    cursor.set({graphics:g});    
+}
+
+function calculateCursorPosition(x, y) {
+	
+	var x_ = Math.floor(x/32)*32;
+	var y_ = Math.floor(y/32)*32;
+	
+	cursor.x = x_;
+	cursor.y = y_;
 }
 
 function createBlank(x, y) {	
 	
-	px = x*32;
-	py = y*32;
+	var px = x*32;
+	var py = y*32;
 	
 	var g = new createjs.Graphics(); 
 	g.setStrokeStyle(1); 
@@ -133,82 +244,149 @@ function createBlank(x, y) {
     s.x = px;
     s.y = py;
 	s.addEventListener("rollover", function (event) {
-		var g = new createjs.Graphics();
+				
+		/*var g = new createjs.Graphics();
 		g.setStrokeStyle(1); 
-		g.beginStroke(createjs.Graphics.getRGB(0,0,0)); 
-		g.beginFill(createjs.Graphics.getRGB(255,255,0)); 
+		if(create) {
+			g.beginStroke(createjs.Graphics.getRGB(0,0,0)); 
+			g.beginFill(createjs.Graphics.getRGB(0,255,0));
+		} else {
+			g.beginStroke(createjs.Graphics.getRGB(0,0,0)); 
+			g.beginFill(createjs.Graphics.getRGB(255,255,0));
+		}
 		g.drawRect(0,0,32,32);
 		
-		event.target.set({graphics:g});
+		event.target.set({graphics:g});*/
     });		
 	s.addEventListener("rollout", function (event) {
-		var g = new createjs.Graphics();
+		/*var g = new createjs.Graphics();
 		g.setStrokeStyle(1); 
 		g.beginStroke(createjs.Graphics.getRGB(0,0,0)); 
 		g.beginFill(createjs.Graphics.getRGB(255,255,255)); 
-		g.drawRect(0,0,32,32);
+		g.drawRect(0,0,32,32);*/
 		
 		event.target.set({graphics:g});
-    });		
+    });
+	s.addEventListener("click", function (event) {
+		/*if(create) {			
+			sendCreateConstruction([event.target.col, event.target.row]);
+			create = false;
+			createWhat = ""
+		}*/
+    });
 	
-  	stage.addChild(s);	
+	s.set({
+		col: x,
+		row: y
+	});
+	
+  	stage.addChild(s);
+  	
+  	if(!soil_blocks[y])
+  		soil_blocks[y] = [];
+
+  	soil_blocks[y].push(s);
 }
 
 function showEstadoConstruction(event) {
-	constru = null;
+	var constru = null;
 
+		if(event.target.construction_type == "House") {
 		try {
 				constru = city.constructions.houses[event.target.construction_index];
 			} catch (e) {
 			}
-		if (!constru)
+		} else 
+		if (event.target.construction_type == "Farm") {
 			try {
 				constru = city.constructions.farms[event.target.construction_index];
 			} catch (e) {
 			}
-		if (!constru)
+		}else
+		if (event.target.construction_type == "PolicePost") {
 			try {
 				constru = city.constructions.policePosts[event.target.construction_index];
 			} catch (e) {
 			}
-
-		if (!constru)
+		} else
+		if (event.target.construction_type == "FiremanPost") {
 			try {
 				constru = city.constructions.firemanPosts[event.target.construction_index];
 			} catch (e) {
 			}
-
+		} else
+		if (event.target.construction_type == "Cloths") {
+			try {
+				constru = city.constructions.cloths[event.target.construction_index];
+			} catch (e) {
+			}
+		}
+				
 		document.getElementById("txtType").value = constru.type;
 		document.getElementById("txtOwnerType").value = constru.ownerType;
 		document.getElementById("txtJobs").value = constru.avaliableJobs;
-		document.getElementById("txtEmployed").value = constru.employed;
+		document.getElementById("txtEmployed").value = constru.employed.length;
 		document.getElementById("txtConservation").value = constru.conservation;
 		document.getElementById("txtBuilt").value = constru.built;
 		document.getElementById("txtClass").value = constru.familyClass;
+		document.getElementById("txtSavings").value = constru.savings;
+		document.getElementById("txtCost").value = constru.generalCost + constru.conservationCost;
 
-		document.getElementById("txtEntertainment").value = constru.entertainment;
-		document.getElementById("txtWine").value = constru.wine;
-		document.getElementById("txtFurniture").value = constru.furniture;
-		document.getElementById("txtMeat").value = constru.meat;
-		document.getElementById("txtBeans").value = constru.beans;
-		document.getElementById("txtRice").value = constru.rice;
-		document.getElementById("txtCloths").value = constru.cloths;
-		document.getElementById("txtCitizenActive").value = constru.citizenActive;
-		document.getElementById("txtCitizenChild").value = constru.citizenChild;
-		document.getElementById("txtWithaJob").value = constru.withaJob;
-		document.getElementById("txtSatisfaction").value = constru.satisfaction;
-
-		document.getElementById("houseDiv").style.display = "block";
+		document.getElementById("houseDiv").style.display = "none";
+		document.getElementById("farmDiv").style.display = "none";
+		if(constru.type == "House") {
+			
+			document.getElementById("txtEntertainment").value = constru.entertainment;
+			document.getElementById("txtWine").value = constru.wine;
+			document.getElementById("txtFurniture").value = constru.furniture;
+			document.getElementById("txtMeat").value = constru.meat;
+			document.getElementById("txtBeans").value = constru.beans;
+			document.getElementById("txtRice").value = constru.rice;
+			document.getElementById("txtCloths").value = constru.cloths;
+			document.getElementById("txtCitizenActive").value = constru.citizens.length;
+			document.getElementById("txtCitizenChild").value = constru.citizenChild;
+			document.getElementById("txtWithaJob").value = constru.withaJob;
+			document.getElementById("txtSatisfaction").value = constru.satisfaction;
+			document.getElementById("houseDiv").style.display = "block";
+			
+		} else if(constru.type == "PolicePost") {
+			
+		} else if(constru.type == "FiremanPost") {
+			
+		} else if(constru.type == "Farm") {
+			
+			document.getElementById("txtProduced").value = constru.produced;
+			document.getElementById("txtMaxProduction").value = constru.production;
+			document.getElementById("txtTypeProduction").value = constru.typeProduction;
+			
+		    document.getElementById("farmDiv").style.display = "block";
+		    
+		} else if(constru.type == "Cloths") {
+			
+			document.getElementById("txtProduced").value = constru.produced;
+			document.getElementById("txtMaxProduction").value = constru.production;
+			document.getElementById("txtTypeProduction").value = constru.typeProduction;
+			
+		    document.getElementById("farmDiv").style.display = "block";
+		}
 
 	}
 
-	function createShape(constru, index, color1, color2, onclick) {
+	function createShape(constru, index, color1, color2, onclick, w, h) {
 
+		var w_ = w;
+		var h_ = h;
+		
+		if(!w) {
+			w_ = 32;
+			h_ = 32;
+		}
+					
 		var g = new createjs.Graphics();
 		g.setStrokeStyle(1);
 		g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
-		g.beginFill(createjs.Graphics.getRGB(255, 0, 0));
-		g.drawRect(0, 0, 32, 32);
+		g.beginFill(createjs.Graphics.getRGB(color1[0], color1[1], color1[2]));
+		g.drawRect(0, 0, w_, h_);
 
 		var s = new createjs.Shape(g);
 		s.x = px;
@@ -219,7 +397,7 @@ function showEstadoConstruction(event) {
 			g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
 			g.beginFill(createjs.Graphics.getRGB(color2[0], color2[1],
 					color2[2]));
-			g.drawRect(0, 0, 32, 32);
+			g.drawRect(0, 0, w_, h_);
 
 			event.target.set({
 				graphics : g
@@ -231,7 +409,7 @@ function showEstadoConstruction(event) {
 			g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
 			g.beginFill(createjs.Graphics.getRGB(color1[0], color1[1],
 					color1[2]));
-			g.drawRect(0, 0, 32, 32);
+			g.drawRect(0, 0, w_, h_);
 
 			event.target.set({
 				graphics : g
@@ -243,7 +421,8 @@ function showEstadoConstruction(event) {
 		});
 
 		s.set({
-			construction_index : index
+			construction_index : index,
+			construction_type: constru.type
 		});
 
 		return s;
@@ -253,12 +432,27 @@ function showEstadoConstruction(event) {
 
 		px = data.mapSlots[0].x * 32;
 		py = data.mapSlots[0].y * 32;
-
-		var s = createShape(data, index, [ 255, 0, 0 ], [ 255, 159, 159 ],
-				showEstadoConstruction)
+		var color = [ 213, 255, 213 ];
+		
+		if(data.conservation < 50) {
+			color = [ 255, 0, 0 ];
+		} else if(data.conservation <= 0) {
+			if(!data.cleaned) {
+				color = [ 0, 0, 0 ];
+			} else {
+				color = [ 249, 249, 249 ];
+			}
+		}
+		
+		var text = new createjs.Text(data.familyClass, "16px Arial", "#000000");
+		text.x = px;
+		text.y = py;		
+		
+		var s = createShape(data, index, color, [ 255, 159, 159 ], showEstadoConstruction);
 		s.x = px;
 		s.y = py;
 		stage.addChild(s);
+		stage.addChild(text);
 	}
 
 	function createRoad(data, index) {
@@ -300,124 +494,118 @@ function showEstadoConstruction(event) {
 		stage.addChild(s);
 	}
 
-	function createPolice(data) {
+	function createPolice(data, index) {
+		
 		px = data.mapSlots[0].x * 32;
 		py = data.mapSlots[0].y * 32;
-
-		var g = new createjs.Graphics();
-		g.setStrokeStyle(1);
-		g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
-		g.beginFill(createjs.Graphics.getRGB(91, 113, 255));
-		g.drawRect(0, 0, 32, 32);
-
-		var s = new createjs.Shape(g);
+		var color = [ 91, 113, 255 ];
+		
+		if(data.conservation < 50) {
+			color = [ 91, 113, 255 ];
+		} else if(data.conservation <= 0) {
+			if(!data.cleaned) {
+				color = [ 0, 0, 0 ];
+			} else {
+				color = [ 249, 249, 249 ];
+			}
+		}
+		
+		var text = new createjs.Text("PO", "16px Arial", "#000000");
+		text.x = px;
+		text.y = py;		
+		
+		var s = createShape(data, index, color, [ 169, 181, 255 ], showEstadoConstruction);
 		s.x = px;
 		s.y = py;
-		s.addEventListener("rollover", function(event) {
-			var g = new createjs.Graphics();
-			g.setStrokeStyle(1);
-			g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
-			g.beginFill(createjs.Graphics.getRGB(169, 181, 255));
-			g.drawRect(0, 0, 32, 32);
-
-			event.target.set({
-				graphics : g
-			});
-		});
-		s.addEventListener("rollout", function(event) {
-			var g = new createjs.Graphics();
-			g.setStrokeStyle(1);
-			g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
-			g.beginFill(createjs.Graphics.getRGB(91, 113, 255));
-			g.drawRect(0, 0, 32, 32);
-
-			event.target.set({
-				graphics : g
-			});
-		});
-
 		stage.addChild(s);
+		stage.addChild(text);		
 	}
 
-	function createFireMan(data) {
+	function createFireMan(data, index) {
+		
 		px = data.mapSlots[0].x * 32;
 		py = data.mapSlots[0].y * 32;
-
-		var g = new createjs.Graphics();
-		g.setStrokeStyle(1);
-		g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
-		g.beginFill(createjs.Graphics.getRGB(230, 255, 0));
-		g.drawRect(0, 0, 32, 32);
-
-		var s = new createjs.Shape(g);
+		var color = [ 230, 255, 0 ];
+		
+		if(data.conservation < 50) {
+			color = [ 255, 0, 0 ];
+		} else if(data.conservation <= 0) {
+			if(!data.cleaned) {
+				color = [ 0, 0, 0 ];
+			} else {
+				color = [ 249, 249, 249 ];
+			}
+		}
+		
+		var text = new createjs.Text("Fireman", "16px Arial", "#000000");
+		text.x = px;
+		text.y = py;		
+		
+		var s = createShape(data, index, color, [ 230, 255, 255 ], showEstadoConstruction, 32, 32);
 		s.x = px;
 		s.y = py;
-		s.addEventListener("rollover", function(event) {
-			var g = new createjs.Graphics();
-			g.setStrokeStyle(1);
-			g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
-			g.beginFill(createjs.Graphics.getRGB(230, 255, 255));
-			g.drawRect(0, 0, 32, 32);
-
-			event.target.set({
-				graphics : g
-			});
-		});
-		s.addEventListener("rollout", function(event) {
-			var g = new createjs.Graphics();
-			g.setStrokeStyle(1);
-			g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
-			g.beginFill(createjs.Graphics.getRGB(230, 255, 0));
-			g.drawRect(0, 0, 32, 32);
-
-			event.target.set({
-				graphics : g
-			});
-		});
-
 		stage.addChild(s);
+		stage.addChild(text);		
 	}
 
-	function createFarm(data) {
+	function createFarm(data, index) {
+		
 		px = data.mapSlots[0].x * 32;
 		py = data.mapSlots[0].y * 32;
-
-		var g = new createjs.Graphics();
-		g.setStrokeStyle(1);
-		g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
-		g.beginFill(createjs.Graphics.getRGB(36, 182, 0));
-		g.drawRect(0, 0, 64, 64);
-
-		var s = new createjs.Shape(g);
+		var color = [ 36, 182, 0 ];
+		
+		if(data.conservation < 50) {
+			color = [ 255, 0, 0 ];
+		} else if(data.conservation <= 0) {
+			if(!data.cleaned) {
+				color = [ 0, 0, 0 ];
+			} else {
+				color = [ 249, 249, 249 ];
+			}
+		}
+		
+		var text = new createjs.Text("Farm", "16px Arial", "#000000");
+		text.x = px;
+		text.y = py;		
+		
+		var s = createShape(data, index, color, [ 169, 181, 255 ], showEstadoConstruction, 64, 96);
 		s.x = px;
 		s.y = py;
-		s.addEventListener("rollover", function(event) {
-			var g = new createjs.Graphics();
-			g.setStrokeStyle(1);
-			g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
-			g.beginFill(createjs.Graphics.getRGB(36, 182, 255));
-			g.drawRect(0, 0, 64, 64);
-
-			event.target.set({
-				graphics : g
-			});
-		});
-		s.addEventListener("rollout", function(event) {
-			var g = new createjs.Graphics();
-			g.setStrokeStyle(1);
-			g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
-			g.beginFill(createjs.Graphics.getRGB(36, 182, 0));
-			g.drawRect(0, 0, 64, 64);
-
-			event.target.set({
-				graphics : g
-			});
-		});
-
 		stage.addChild(s);
+		stage.addChild(text);			
 	}
 
+	function createCloths(data, index) {
+		
+		px = data.mapSlots[0].x * 32;
+		py = data.mapSlots[0].y * 32;
+		var color = [ 255, 85, 85 ];
+		
+		if(data.conservation < 50) {
+			color = [ 255, 0, 0 ];
+		} else if(data.conservation <= 0) {
+			if(!data.cleaned) {
+				color = [ 0, 0, 0 ];
+			} else {
+				color = [ 255, 51, 204 ];
+			}
+		}
+		
+		var text = new createjs.Text("Cloths", "16px Arial", "#000000");
+		text.x = px;
+		text.y = py;		
+		
+		var s = createShape(data, index, color, [ 80, 80, 80 ], showEstadoConstruction, 64, 64);
+		s.x = px;
+		s.y = py;
+		stage.addChild(s);
+		stage.addChild(text);			
+	}	
+	
 	function processMap() {
+		soil_blocks = [];
+		stage.removeAllChildren();		
+		
 		i = 0;
 		j = 0;
 
@@ -426,6 +614,8 @@ function showEstadoConstruction(event) {
 				createBlank(j, i);
 			}
 		}
+		
+		createCursor();
 
 		for (i = 0; i < city.constructions.roads.length; i++) {
 			createRoad(city.constructions.roads[i], i);
@@ -438,6 +628,10 @@ function showEstadoConstruction(event) {
 		for (i = 0; i < city.constructions.farms.length; i++) {
 			createFarm(city.constructions.farms[i], i);
 		}
+		
+		for (i = 0; i < city.constructions.cloths.length; i++) {
+			createCloths(city.constructions.cloths[i], i);
+		}
 
 		for (i = 0; i < city.constructions.firemanPosts.length; i++) {
 			createFireMan(city.constructions.firemanPosts[i], i);
@@ -446,6 +640,7 @@ function showEstadoConstruction(event) {
 		for (i = 0; i < city.constructions.policePosts.length; i++) {
 			createPolice(city.constructions.policePosts[i], i);
 		}
+				
 	}
 
 	var ws = new WebSocket("@routes.CityController.map().webSocketURL(request)");
@@ -470,5 +665,79 @@ function showEstadoConstruction(event) {
 		}
 
 		ws.send(JSON.stringify(showmap));
+	}
+	
+	function endTurn() {
+		endturn = {
+			name : "end_turn"
+		}
+
+		ws.send(JSON.stringify(endturn));
+	}
+	
+	//CREATE NEW CONSTRUCTION
+	
+	function newHouse() {
+		create = true;
+		createWhat = "House";
+		adjustCursor(32,32,[100,100,100]);
+	}
+	
+	function newFiremanPost() {
+		create = true;
+		createWhat = "FiremanPost";
+		adjustCursor(32,32,[100,100,100]);
+	}	
+
+	function newPolicePost() {
+		create = true;
+		createWhat = "PolicePost";
+		adjustCursor(32,32,[100,100,100]);
+	}
+	
+	function newCloths() {
+		create = true;
+		createWhat = "Cloths";
+		adjustCursor(64,64,[100,100,100]);
+	}	
+	
+	function newFarmRice() {
+		create = true;
+		createWhat = "Farm";
+		adjustCursor(64,64,[100,100,100]);
+		typesProd = "rice"; 
+	}
+	
+	function newFarmGrapes() {
+		create = true;
+		createWhat = "Farm";
+		adjustCursor(64,64,[100,100,100]);
+		typesProd = "grapes"; 
+	}
+	
+	function newFarmMeat() {
+		create = true;
+		createWhat = "Farm";
+		adjustCursor(64,64,[100,100,100]);
+		typesProd = "meat"; 
+	}
+	
+	function newFarmBeans() {
+		create = true;
+		createWhat = "Farm";
+		adjustCursor(64,64,[100,100,100]);
+		typesProd = "beans"; 
+	}
+	
+	function sendCreateConstruction(pos) {
+		var create = {
+			name: "create",
+			type: createWhat,
+			position:pos,
+			id: city.id,
+			prodType: typesProd
+		}
+		
+		ws.send(JSON.stringify(create));
 	}
 </script>

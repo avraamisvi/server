@@ -42,7 +42,7 @@ public class CityTest {
 				List<ObjectId>ids = repo.findIds();
 				for(ObjectId id : ids) {
 					city = repo.get(id);
-					logic.processEconomyTaxes(city);
+					logic.processEconomyTaxes(gamer, city);
 					repo.save(city);
 				}
 				

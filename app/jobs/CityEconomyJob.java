@@ -62,7 +62,7 @@ public class CityEconomyJob extends UntypedActor {
 					List<ObjectId>ids = repo.findIds();
 					for(ObjectId id : ids) {
 						City city = repo.get(id);
-						logic.processEconomyTaxes(city);
+						logic.processEconomyTaxes(gamer, city);
 						repo.save(city);
 					}
 					

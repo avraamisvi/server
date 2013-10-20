@@ -18,4 +18,14 @@ public class Road extends Construction{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void printDebug() {
+//		super.printDebug();
+	}
+	
+	@Override
+	public void updateJobs(Gamer gamer, City city) {
+		// TODO Auto-generated method stub
+	}
 }

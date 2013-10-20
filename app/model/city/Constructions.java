@@ -9,10 +9,17 @@ import org.mongodb.morphia.annotations.Embedded;
 public class Constructions {
 	List<Road> roads = new ArrayList<Road>();
 	List<House> houses = new ArrayList<House>();
+	List<ClothsFabric> cloths = new ArrayList<ClothsFabric>();
 	List<Farm> farms = new ArrayList<Farm>();
 	List<PolicePost> policePosts = new ArrayList<PolicePost>();
 	List<FiremanPost> firemanPosts = new ArrayList<FiremanPost>();
 	
+	public List<ClothsFabric> getCloths() {
+		return cloths;
+	}
+	public void setCloths(List<ClothsFabric> cloths) {
+		this.cloths = cloths;
+	}
 	public List<House> getHouses() {
 		return houses;
 	}
@@ -62,6 +69,9 @@ public class Constructions {
 		case Road:
 			roads.add((Road) construction);
 			break;			
+		case Cloths:
+			cloths.add((ClothsFabric) construction);
+			break;			
 		default:
 			break;
 		}
@@ -74,6 +84,7 @@ public class Constructions {
 		ret.addAll(policePosts);
 		ret.addAll(firemanPosts);
 		ret.addAll(farms);
+		ret.addAll(cloths);
 		ret.addAll(houses);
 		
 		return ret;
