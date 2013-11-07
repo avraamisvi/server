@@ -15,6 +15,7 @@ import model.city.MapPositionPoint;
 import model.city.PolicePost;
 import model.city.Road;
 
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 
@@ -23,21 +24,61 @@ import repository.UtilRepository;
 import com.mongodb.Mongo;
 
 import enums.EmperiumConstants;
+import enums.SoilType;
 
 public class CreateTestBase {
 	public static void main(String[] args) throws Exception {
 		Morphia morphia = UtilRepository.getMorphia();
 		Datastore ds = morphia.createDatastore(new Mongo(), "empire");
-				
-		ds.save(generateCity());
-		ds.save(new Gamer());
+		
+		Gamer gamer = new Gamer();
+		City city = generateCity();
+		city.setGamerId((ObjectId) ds.save(gamer).getId());
+		ds.save(city);
+	}
+	
+	public static CityMap createMap() throws Exception {
+		CityMap map = new CityMap();
+		map.setConstructions(new long[EmperiumConstants.CITY_MAX_ROWS][EmperiumConstants.CITY_MAX_COLS]);
+		map.setSoil(new char[EmperiumConstants.CITY_MAX_ROWS][EmperiumConstants.CITY_MAX_COLS]);
+		
+		File fl = new File("ground_map.txt");
+		char[] cbuf = new char[(int) fl.length()];
+		
+		FileReader flr = new FileReader(fl);
+		flr.read(cbuf);
+		flr.close();
+		
+		String data = new String(cbuf);
+		String lines[] = data.split(";");		
+		
+		for(int i=0; i < lines.length; i++) {
+			String line = lines[i];
+			line = line.replace("\n", "");
+			String []cols = line.split(",");			
+			for(int j=0; j < cols.length; j++) {
+				if(cols[j].equals("v")) {
+					map.getSoil()[i][j] = 'v';
+				} else if(cols[j].equals("s")) {
+					map.getSoil()[i][j] = 's';
+				} else if(cols[j].equals("r")) {
+					map.getSoil()[i][j] = 'r';
+				} else if(cols[j].equals("c")) {
+					map.getSoil()[i][j] = 'c';
+				} else if(cols[j].equals("w")) {
+					map.getSoil()[i][j] = 'w';
+				}
+			}
+		}
+		
+		return map;
 	}
 	
 	public static City generateCity() throws Exception {
 		City city = new City();
 		city.setName("teste");
 		
-		CityMap map = new CityMap();
+		CityMap map = createMap();
 		
 		map.setConstructions(new long[EmperiumConstants.CITY_MAX_ROWS][EmperiumConstants.CITY_MAX_COLS]);
 		
@@ -88,8 +129,8 @@ public class CreateTestBase {
 				}
 				
 				if(constru != null) {
-					constru.getMapSlots().add(new MapPositionPoint(j, i));
-					map.getConstructions()[j][i] = constru.getMapPositionId();
+					constru.getMapSlots().add(new MapPositionPoint(i, j));
+					map.getConstructions()[i][j] = constru.getMapPositionId();
 				}
 			}
 		}

@@ -23,8 +23,12 @@ public class CityLogicService {
 	public void processJobs(Gamer gamer, City city) {
 		city.resetJobs();
 		List<Construction> construs = city.getConstructions().toList();
-		for (Construction constru :  construs) {			
-			constru.updateJobs(gamer, city);
+		for (Construction constru :  construs) {
+			try {
+				constru.updateJobs(gamer, city);
+			} catch(Exception e) {
+				e.printStackTrace();//FIXME this
+			}
 		}
 ////		city.updateIndices();
 ////		
@@ -36,9 +40,13 @@ public class CityLogicService {
 	 * Runs every 24 hours
 	 * @param city
 	 * @param gamer
+	 * @throws Exception 
 	 */
-	public void processEconomyTaxes(Gamer gamer, City city) {
-		
+	public void processEconomyTaxes(Gamer gamer, City city) throws Exception {
+				
+		gamer.resetPopulation();
+		gamer.resetGoods();
+		gamer.resetExpenses();
 		processJobs(gamer, city);
 		
 		//needed for recreate the currently treasure contribution
@@ -51,23 +59,34 @@ public class CityLogicService {
 		List<Construction> construs = city.getConstructions().toList();
 		for (Construction constru :  construs) {
 			if (constru != null) {
-				constru.update(gamer, city);
-				constru.printDebug();
+				try {
+					constru.update(gamer, city);
+					constru.printDebug();
+				} catch(Exception e) {
+					e.printStackTrace();//FIXME
+				}
 			}
 		}
 		
-		city.updateIndices();
+		try {
+			city.updateIndices();
+		} catch(Exception e) {
+			e.printStackTrace();//FIXME
+		}
 
 		printDebug(city);
 		
+		//creating the indices
+		gamer.increasePopulation(city.getPopulation());
 		gamer.increaseExpenses(city.getTreasureExpenses());
 		gamer.increaseBeans(city.getBeans());
 		gamer.increaseCloths(city.getCloths());
-		gamer.increaseEntertainment(city.getEntertainment());
+		gamer.increaseCeramics(city.getCeramics());
 		gamer.increaseFurniture(city.getFurniture());
 		gamer.increaseMeat(city.getMeat());
 		gamer.increaseWine(city.getWine());
 		gamer.increaseRice(city.getRice());
+		
 	}
 	
 	public void printDebug(City city) {
@@ -78,7 +97,7 @@ public class CityLogicService {
 		System.out.println("Rice Demand: " + city.getDemandRice());
 		System.out.println("Beans Demand: " + city.getDemandBeans());
 		System.out.println("Cloths Demand: " + city.getDemandCloths());
-		System.out.println("Entertainment Demand: " + city.getDemandEntertainment());
+		System.out.println("Entertainment Demand: " + city.getDemandCeramics());
 		System.out.println("Furniture Demand: " + city.getDemandFurniture());
 		System.out.println("Wine Demand: " + city.getDemandWine());
 		
@@ -86,7 +105,7 @@ public class CityLogicService {
 		System.out.println("Rice: " + city.getRice());
 		System.out.println("Beans: " + city.getBeans());
 		System.out.println("Cloths: " + city.getCloths());
-		System.out.println("Entertainment: " + city.getEntertainment());
+		System.out.println("Ceramics: " + city.getCeramics());
 		System.out.println("Furniture: " + city.getFurniture());
 		
 		System.out.println("Population: " + city.getPopulation());

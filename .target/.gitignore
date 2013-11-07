@@ -4,9 +4,6 @@
 /IntegrationTest.class
 /controllers
 /enums
+/exceptions
 /jobs
 /model
-/repository
-/views
-/simulacao
-/services

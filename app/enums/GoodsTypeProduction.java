@@ -5,8 +5,10 @@ public enum GoodsTypeProduction {
 	wine,
 	furniture,
 	meat,
+	cotton,
 	beans,
 	rice,
 	grapes,
-	cloths
+	cloths,
+	none
 }

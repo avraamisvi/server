@@ -4,5 +4,6 @@ public enum MineType {
 	iron, 
 	wood, 
 	sulfur,
-	rock 
+	rock,
+	clay
 }

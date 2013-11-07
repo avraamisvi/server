@@ -1,17 +1,20 @@
 package model.city;
 
-import enums.ConstructionType;
-import enums.OwnerType;
 import model.City;
 import model.Gamer;
+import enums.ConstructionType;
+import enums.EmperiumConstants;
+import enums.OwnerType;
 
 public class FiremanPost extends Construction{
 	
 	public FiremanPost() {
 		type = ConstructionType.FiremanPost;
 		ownerType = OwnerType.national;
-		conservationCost = 10;
+		conservationCost = EmperiumConstants.FIREMAN_CONSERVATION_COST;
 		avaliableJobs = 4;
+		working=true;
+		timeToBuild = EmperiumConstants.FIREMAN_SECONDS_TO_BUILD;
 	}
 
 	@Override

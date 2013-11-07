@@ -1,22 +1,27 @@
 package model.city;
 
 /**
- * Represents a row and a coll in the map. 
+ * Represents a row and a col in the map. 
  * @author abraao
  *
  */
 public class MapPositionPoint {
 	
-	public int x;
-	public int y;
+	public int x;//COL
+	public int y;//ROW
 	
 	public MapPositionPoint() {		
 	}
 	
-	public MapPositionPoint(int x, int y) {
+	/**
+	 * 
+	 * @param x Row
+	 * @param y Col
+	 */
+	public MapPositionPoint(int row, int col) {
 		super();
-		this.x = x;
-		this.y = y;
+		this.x = col;
+		this.y = row;
 	}
 	
 	public int getX() {

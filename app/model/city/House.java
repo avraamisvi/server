@@ -18,7 +18,7 @@ public class House extends Construction{
 	
 	FamilyClass familyClass;	
 	
-	int entertainment;//AA
+	int ceramics;//AA
 	int wine;//A 
 	int furniture;//BA
 	int meat;//B
@@ -54,8 +54,8 @@ public class House extends Construction{
 		citizenChild = 4;		
 	}	
 	
-	public long getEntertainment() {
-		return entertainment;
+	public long getCeramics() {
+		return ceramics;
 	}
 
 	public List<Citizen> getCitizens() {
@@ -132,7 +132,6 @@ public class House extends Construction{
 		this.citizenChild = 0;
 		
 		satisfaction = 0;
-		int total = 0;
 		
 		int _cloths = cloths;
 		int _rice= rice;
@@ -140,11 +139,12 @@ public class House extends Construction{
 		int _meat= meat;
 		int _furniture= furniture;
 		int _wine = wine;
-		int _entertainment= entertainment;			
+		int _ceramics= ceramics;			
 		
 		for (Citizen c : cits) {
 			
 			c.satisfaction = 0;
+//			c.familyClass = familyClass;
 			
 			if(_cloths > 0) {
 				_cloths--;
@@ -176,9 +176,9 @@ public class House extends Construction{
 				c.drinkWine();
 			}
 			
-			if(_entertainment> 0) {
-				_entertainment--;
-				c.entertain();
+			if(_ceramics> 0) {
+				_ceramics--;
+				c.buyCeramics();
 			}
 			
 			this.citizenChild += c.procreate(gamer, city, this);
@@ -186,7 +186,6 @@ public class House extends Construction{
 			if(!c.isDead()) {
 				c.id = listCitizens.size();
 				listCitizens.add(c);
-				total++;				
 			} else {
 				System.out.println("Cidadão morreu:" + c.id + " Casa:" + this.mapPositionId);
 			}
@@ -219,7 +218,7 @@ public class House extends Construction{
 		if(this.conservation <= 0) {
 			this.citizens = new ArrayList<Citizen>();
 			this.citizenChild = 0;
-			this.entertainment=0;//AA
+			this.ceramics=0;//AA
 			this.wine=0;//A 
 			this.furniture=0;//BA
 			this.meat=0;//B
@@ -279,11 +278,11 @@ public class House extends Construction{
 		meat = 0;
 		furniture = 0;
 		wine = 0;
-		entertainment = 0;		
+		ceramics = 0;		
 		
 		if(savings > 0) {
 			Prices prices = new Prices();
-			prices.entertainmentPrice = getHousePopulation()*city.getEntertainmentPrice();//AA
+			prices.ceramicsPrice = getHousePopulation()*city.getCeramicsPrice();//AA
 			prices.winePrice = getHousePopulation()*city.getWinePrice();//A 
 			prices.furniturePrice = getHousePopulation()*city.getFurniturePrice();//BA
 			prices.meatPrice = getHousePopulation()*city.getMeatPrice();//B
@@ -311,7 +310,7 @@ public class House extends Construction{
 			meat= (int) city.decreaseMeat(meat);
 			furniture= (int) city.decreaseFurniture(furniture);
 			wine = (int) city.decreaseWine(wine);
-			entertainment= (int) city.decreaseEntertainment(entertainment);
+			ceramics= (int) city.decreaseCeramics(ceramics);
 		}
 	}
 	
@@ -324,7 +323,7 @@ public class House extends Construction{
 	 * @param b_meat
 	 * @param b_furniture
 	 * @param b_wine
-	 * @param b_entertainment
+	 * @param b_ceramics
 	 * @param prices
 	 * @param city
 	 */
@@ -335,7 +334,7 @@ public class House extends Construction{
 	boolean b_meat,
 	boolean b_furniture,
 	boolean b_wine,
-	boolean b_entertainment, Prices prices, City city) {
+	boolean b_ceramics, Prices prices, City city) {
 		
 		if(b_rice) {
 			rice = calculateGoods(prices.ricePrice);
@@ -361,9 +360,9 @@ public class House extends Construction{
 			wine = calculateGoods(prices.winePrice);
 			decreaseSavings(wine * city.getWinePrice());
 		}
-		if (b_entertainment) {
-			entertainment = calculateGoods(prices.entertainmentPrice);
-			decreaseSavings(entertainment * city.getEntertainmentPrice());
+		if (b_ceramics) {
+			ceramics = calculateGoods(prices.ceramicsPrice);
+			decreaseSavings(ceramics * city.getCeramicsPrice());
 		}
 	}
 	
@@ -458,8 +457,8 @@ public class House extends Construction{
 		this.cloths = cloths;
 	}
 
-	public void setEntertainment(int entertainment) {
-		this.entertainment = entertainment;
+	public void setCeramics(int entertainment) {
+		this.ceramics = entertainment;
 	}
 
 	public void setCitizens(List<Citizen> citizens) {
@@ -487,10 +486,10 @@ public class House extends Construction{
 		System.out.println("rice:" + rice);
 		System.out.println("beans:" + beans);
 		System.out.println("cloths:" + cloths);
-		System.out.println("rice:" + entertainment);
 		System.out.println("beans:" + furniture);
 		System.out.println("wine:" + wine);
 		System.out.println("meat:" + meat);
+		System.out.println("ceramics:" + ceramics);
 		System.out.println("Class:" + familyClass.name());
 	}
 	
@@ -499,6 +498,7 @@ public class House extends Construction{
 		if(conservation > 0) {
 			for (Citizen c : citizens) {
 				if(!c.isDead()) {// && !c.isRetired()
+//					c.familyClass = familyClass;
 					c.searchJob(gamer, city);
 				}
 			}
@@ -506,7 +506,7 @@ public class House extends Construction{
 	}
 	
 	class Prices {
-		public long entertainmentPrice;
+		public long ceramicsPrice;
 		public long winePrice; 
 		public long furniturePrice;
 		public long meatPrice;

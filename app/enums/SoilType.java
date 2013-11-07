@@ -1,5 +1,5 @@
 package enums;
 
 public enum SoilType {
-	water, rock, clay, sand
+	water, rock, clay, sand, vegetation
 }

@@ -41,7 +41,7 @@ public class CityEconomyJob extends UntypedActor {
 			Morphia morphia = UtilRepository.getMorphia();		
 			Mongo mongo = new Mongo();
 			
-			GamerRepository gamerRepo = new GamerRepository(mongo, morphia);
+			GamerRepository gamerRepo = new GamerRepository(UtilRepository.getDataStore());
 			
 			List<ObjectId> gamerIds  = gamerRepo.findIds();
 			
@@ -53,7 +53,7 @@ public class CityEconomyJob extends UntypedActor {
 				int count = 0;
 				
 				
-				CityMorphiaRepository repo = new CityMorphiaRepository(mongo, morphia);
+				CityMorphiaRepository repo = new CityMorphiaRepository(UtilRepository.getDataStore());
 				
 				try {
 					gamer.resetExpenses();

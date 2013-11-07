@@ -7,8 +7,12 @@ package model;
  */
 public class Research {
 
+	/**
+	 * Build price
+	 */
 	int sailingCost = 10000;
 	int gunpowderCost = 10000;
+	int conductCodeCost = 10000;
 	int steamEngineCost = 10000;
 	int steelCost = 10000;
 	int flyingCost = 10000;
@@ -17,8 +21,12 @@ public class Research {
 	int diplomacyCost = 10000;
 	int industryCost = 10000;
 	
+	/**
+	 * Levels
+	 */
 	int sailingLevel = 0;
 	int gunpowderLevel = 0;
+	int conductCodeLevel = 0;
 	int steamEngineLevel = 0;
 	int steelLevel = 0;
 	int flyingLevel = 0;
@@ -26,6 +34,7 @@ public class Research {
 	int espionageLevel = 0;
 	int diplomacyLevel = 0;
 	int industryLevel = 0;
+	int miningLevel = 0;
 	
 	public int getSailingCost() {
 		return sailingCost;
@@ -170,5 +179,30 @@ public class Research {
 	public void setDiplomacyLevel(int diplomacyLevel) {
 		this.diplomacyLevel = diplomacyLevel;
 	}
+
+	public int getMiningLevel() {
+		return miningLevel;
+	}
+
+	public void setMiningLevel(int miningLevel) {
+		this.miningLevel = miningLevel;
+	}
+
+	public int getConductCodeCost() {
+		return conductCodeCost;
+	}
+
+	public void setConductCodeCost(int conductCodeCost) {
+		this.conductCodeCost = conductCodeCost;
+	}
+
+	public int getConductCodeLevel() {
+		return conductCodeLevel;
+	}
+
+	public void setConductCodeLevel(int conductCodeLevel) {
+		this.conductCodeLevel = conductCodeLevel;
+	}
+	
 	
 }

@@ -151,7 +151,7 @@ public class Citizen {
 		}
 	}
 	
-	public void entertain(){
+	public void buyCeramics(){
 		
 		if(familyClass.equals(FamilyClass.AA)) {
 			satisfaction += CLASS_AA_FACTOR;

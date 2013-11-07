@@ -2,6 +2,12 @@ package model;
 
 import java.util.List;
 
+import model.city.Citizen;
+import model.city.CityMap;
+import model.city.Construction;
+import model.city.Constructions;
+import model.city.House;
+
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
@@ -13,14 +19,14 @@ import controllers.serializers.ObjectIdString;
 import enums.ConstructionType;
 import enums.EmperiumConstants;
 import enums.FamilyClass;
-import model.city.Citizen;
-import model.city.CityMap;
-import model.city.Construction;
-import model.city.Constructions;
-import model.city.House;
 
 @Entity
 public class City {
+	
+	/**
+	 * City walls level
+	 */
+	int wallsLevel;
 	
 	/**
 	 * Gamer Id
@@ -51,6 +57,8 @@ public class City {
 	 */
 	long industryTax = 30;
 	
+	long educationalTax = 10;
+	
 	/**
 	 * Percent
 	 */
@@ -72,47 +80,53 @@ public class City {
 	/**
 	 * Goods price
 	 */	
-	long entertainmentPrice = 100;//AA
+	long ceramicsPrice = 100;//AA
 	long winePrice = 37;//A 
 	long furniturePrice = 14;//BA
 	long meatPrice = 11;//B
 	long beansPrice = 8;//C
 	long ricePrice = 3;//D
-	long clothsPrice = 1;//D	
+	long clothsPrice = 1;//D
+	
+	long grapesPrice = 8;	
+	long cottonPrice = 8;	
 	
 	/**
 	 * Goods total production (from this city)
 	 */
-	int entertainment = 1000;//AA
-	int wine = 1000;//A
-	int furniture = 1000;//BA
-	int meat = 1000;//B
-	int beans = 1000;//C
-	int rice = 1000;//D
-	int cloths = 1000;//D	
-	
+	int ceramics = 0;//AA
+	int wine = 0;//A
+	int furniture = 0;//BA
+	int meat = 0;//B
+	int beans = 0;//C
+	int rice = 100;//D
+	int cloths = 100;//D	
 	
 	/**
 	 * Total monthly production
 	 */
-	long productionEntertainment = 0;//AA
+	long productionCeramics = 0;//AA
 	long productionWine = 0;//A
 	long productionFurniture = 0;//BA
 	long productionMeat = 0;//B
 	long productionBeans = 0;//C
 	long productionRice = 0;//D
-	long productionCloths = 0;//D		
+	long productionCloths = 0;//D	
 	
 	/**
 	 * Total monthly demanding
 	 */
-	long demandEntertainment = 0;//AA
+	long demandCeramics = 0;//AA
 	long demandWine = 0;//A
 	long demandFurniture = 0;//BA
 	long demandMeat = 0;//B
 	long demandBeans = 0;//C
 	long demandRice = 0;//D
 	long demandCloths = 0;//D
+	
+	long demandCotton;
+	long demandGrapes;
+	long demandWood;
 	
 	/**
 	 * Salaries, the salaries suffer variations according to the economy balance.
@@ -129,7 +143,11 @@ public class City {
 	
 	@Embedded
 	Constructions constructions;
-	
+
+	private int demandSulfur;
+	private int demandIron;
+	private int demandRock;
+
 	public ObjectId getGamerId() {
 		return gamerId;
 	}
@@ -266,12 +284,36 @@ public class City {
 		return treasureExpenses;
 	}
 
-	public long getEntertainmentPrice() {
-		return entertainmentPrice;
+	public long getCeramicsPrice() {
+		return ceramicsPrice;
 	}
 
-	public void setEntertainmentPrice(long entertainmentPrice) {
-		this.entertainmentPrice = entertainmentPrice;
+	public void setCeramicsPrice(long entertainmentPrice) {
+		this.ceramicsPrice = entertainmentPrice;
+	}
+
+	public long getGrapesPrice() {
+		return grapesPrice;
+	}
+
+	public void setGrapesPrice(long grapesPrice) {
+		this.grapesPrice = grapesPrice;
+	}
+
+	public long getCottonPrice() {
+		return cottonPrice;
+	}
+
+	public void setCottonPrice(long cottonPrice) {
+		this.cottonPrice = cottonPrice;
+	}
+
+	public long getDemandGrapes() {
+		return demandGrapes;
+	}
+
+	public void setDemandGrapes(long demandGrapes) {
+		this.demandGrapes = demandGrapes;
 	}
 
 	public long getWinePrice() {
@@ -316,29 +358,29 @@ public class City {
 
 	//GOODS
 	
-	public int getEntertainment() {
-		return entertainment;
+	public int getCeramics() {
+		return ceramics;
 	}
 
-	public void setEntertainment(int entertainment) {
-		this.entertainment = entertainment;
+	public void setCeramics(int entertainment) {
+		this.ceramics = entertainment;
 	}
 	
-	public void increaseEntertainment(long entertainment) {
-		this.entertainment += entertainment;
+	public void increaseCeramics(long entertainment) {
+		this.ceramics += entertainment;
 	}
 	
-	public long decreaseEntertainment(long entertainment) {
+	public long decreaseCeramics(long entertainment) {
 		long ret = 0;
 		
-		demandEntertainment+=entertainment;
+		demandCeramics+=entertainment;
 		
-		if(this.entertainment > entertainment) {
-			this.entertainment -= entertainment;
+		if(this.ceramics > entertainment) {
+			this.ceramics -= entertainment;
 			ret = entertainment;
 		} else {
-			ret = this.entertainment;
-			this.entertainment=0;
+			ret = this.ceramics;
+			this.ceramics=0;
 		}
 		
 		return ret;			
@@ -483,6 +525,59 @@ public class City {
 		return ret;	
 	}
 
+	public void increaseCotton(Gamer gamer, int cotton) {
+		gamer.increaseCotton(cotton);
+	}
+	
+	public int decreaseCotton(Gamer gamer,int cotton) {
+		
+		demandCotton+=cotton;
+		
+		return gamer.decreaseCotton(cotton);	
+	}
+	
+	public void increaseGrapes(Gamer gamer,int grapes) {
+		gamer.increaseGrapes(grapes);
+	}
+	
+	public int decreaseGrapes(Gamer gamer,int grapes) {
+		demandGrapes+=grapes;
+		
+		return gamer.decreaseGrapes(grapes);	
+	}
+	
+	public int decreaseWood(Gamer gamer,int wood) {
+		demandWood+=wood;
+		
+		return gamer.decreaseWood(wood);	
+	}
+	
+	public int decreaseSulfur(Gamer gamer,int val) {
+		demandSulfur+=val;
+		
+		return gamer.decreaseSulfur(val);	
+	}
+	
+	public int decreaseIron(Gamer gamer,int val) {
+		demandIron+=val;
+		
+		return gamer.decreaseIron(val);	
+	}		
+	
+	public int decreaseRock(Gamer gamer,int val) {
+		demandRock+=val;
+		
+		return gamer.decreaseRock(val);	
+	}		
+	
+	public long getDemandCotton() {
+		return demandCotton;
+	}
+	
+	public void setDemandCotton(long demandCotton) {
+		this.demandCotton = demandCotton;
+	}
+	
 	public void setTreasureContribution(long treasureContribution) {
 		this.treasureContribution = treasureContribution;
 	}
@@ -628,8 +723,8 @@ public class City {
 		this.jobs = jobs;
 	}
 	
-	public void increaseProductionEntertainment(int production) {
-		productionEntertainment += production;
+	public void increaseProductionCeramics(int production) {
+		productionCeramics += production;
 	}
 	public void increaseProductionWine(int production) {
 		productionWine += production;
@@ -651,7 +746,7 @@ public class City {
 	}
 	
 	public void resetProduction() {
-		productionEntertainment = 0;//AA
+		productionCeramics = 0;//AA
 		productionWine = 0;//A
 		productionFurniture = 0;//BA
 		productionMeat = 0;//B
@@ -661,7 +756,7 @@ public class City {
 	}
 	
 	public void resetDemand() {
-		demandEntertainment = 0;//AA
+		demandCeramics = 0;//AA
 		demandWine = 0;//A
 		demandFurniture = 0;//BA
 		demandMeat = 0;//B
@@ -678,12 +773,12 @@ public class City {
 		//TODO
 	}
 
-	public long getProductionEntertainment() {
-		return productionEntertainment;
+	public long getProductionCeramics() {
+		return productionCeramics;
 	}
 
-	public void setProductionEntertainment(long productionEntertainment) {
-		this.productionEntertainment = productionEntertainment;
+	public void setProductionCeramics(long productionEntertainment) {
+		this.productionCeramics = productionEntertainment;
 	}
 
 	public long getProductionWine() {
@@ -734,12 +829,12 @@ public class City {
 		this.productionCloths = productionCloths;
 	}
 
-	public long getDemandEntertainment() {
-		return demandEntertainment;
+	public long getDemandCeramics() {
+		return demandCeramics;
 	}
 
-	public void setDemandEntertainment(long demandEntertainment) {
-		this.demandEntertainment = demandEntertainment;
+	public void setDemandCeramics(long demandEntertainment) {
+		this.demandCeramics = demandEntertainment;
 	}
 
 	public long getDemandWine() {
@@ -810,12 +905,66 @@ public class City {
 	public void updateIndices() {
 		List<Construction> cons = getConstructions().toList();
 		resetJobs();
+		maxPopulation = 0;
 		population = 0;
 		for(Construction c : cons) {
+			if(c==null)
+				continue;
 			if(c.getType().equals(ConstructionType.House)) {
 				population += ((House)c).getHousePopulation();
+				maxPopulation += ((House)c).getMaxPopulation();
 			}
 			jobs += c.getAvaliableJobs();
 		}
+		
+		uneployed = Math.abs(jobs - population);
+	}
+
+	public long getDemandWood() {
+		return demandWood;
+	}
+
+	public void setDemandWood(long demandWood) {
+		this.demandWood = demandWood;
+	}
+
+	public int getDemandSulfur() {
+		return demandSulfur;
+	}
+
+	public void setDemandSulfur(int demandSulfur) {
+		this.demandSulfur = demandSulfur;
+	}
+
+	public int getDemandIron() {
+		return demandIron;
+	}
+
+	public void setDemandIron(int demandIron) {
+		this.demandIron = demandIron;
+	}
+
+	public int getDemandRock() {
+		return demandRock;
+	}
+
+	public void setDemandRock(int demandRock) {
+		this.demandRock = demandRock;
+	}
+
+	public long getEducationalTax() {
+		return educationalTax;
+	}
+
+	public void setEducationalTax(long educationalTax) {
+		this.educationalTax = educationalTax;
+	}
+
+	public int getWallsLevel() {
+		return wallsLevel;
+	}
+
+	public void setWallsLevel(int wallsLevel) {
+		this.wallsLevel = wallsLevel;
 	}
 }

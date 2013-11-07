@@ -12,7 +12,6 @@ import org.mongodb.morphia.annotations.Embedded;
 
 import enums.ConstructionType;
 import enums.EmperiumConstants;
-import enums.FamilyClass;
 import enums.OwnerType;
 
 @Embedded
@@ -27,19 +26,14 @@ public abstract class Construction {
 	long savings;	
 	
 	/**
-	 * 
-	 */
-	FamilyClass jobFamilyClass;
-	
-	/**
-	 * Whe the construction was started.
+	 * When the construction was started.
 	 */
 	Date startDate = DateTime.now().toDate();
 	Date lastUpdate = DateTime.now().toDate();
 	
 	ConstructionType type;
 
-	boolean working;
+	boolean working = true;
 	
 	/**
 	 * How many jobs are available
@@ -73,6 +67,7 @@ public abstract class Construction {
 	 */
 	int generalCost = 100;
 		
+	int timeToBuild = 0;
 	
 //	public Construction() {
 //	}
@@ -213,10 +208,10 @@ public abstract class Construction {
 		
 		if(this.getBuilt() < 100) {
 			DateTime now = DateTime.now();
-			if(now.isAfter(start.plusSeconds(EmperiumConstants.SECONDS_TO_BUILD))) {//TODO each construction has a time to build
+			if(now.isAfter(start.plusSeconds(timeToBuild))) {//TODO each construction has a time to build
 				this.built = 100;
 			} else {
-				DateTime targ = start.plusSeconds(EmperiumConstants.SECONDS_TO_BUILD);
+				DateTime targ = start.plusSeconds(timeToBuild);
 				int total = (int) (100*((float)start.getMillis()/(float)targ.getMillis()));
 				this.built = (int) total;
 			}
@@ -307,7 +302,7 @@ public abstract class Construction {
 	}
 	
 	public boolean acceptEmploee(Gamer gamer, City city, Citizen citizen) {
-		return citizen.familyClass.equals(jobFamilyClass);
+		return true;
 	}
 	
 	public boolean haveJob(Gamer gamer, City city, Citizen citizen) {
@@ -362,5 +357,14 @@ public abstract class Construction {
 		}
 		
 		return c.getSalary();
-	}	
+	}
+
+	public int getTimeToBuild() {
+		return timeToBuild;
+	}
+
+	public void setTimeToBuild(int timeToBuild) {
+		this.timeToBuild = timeToBuild;
+	}
+	
 }

@@ -2,13 +2,11 @@ package model.city;
 
 import org.mongodb.morphia.annotations.Embedded;
 
-import enums.SoilType;
-
 @Embedded
 public class CityMap {
 	
 	long constructions[][];
-	SoilType soil [][];// = new SoilType[0][0] 
+	char soil [][];// = new SoilType[0][0] 
 	
 	public CityMap() {
 	}
@@ -23,11 +21,11 @@ public class CityMap {
 		this.constructions = constructions;
 	}
 
-	public SoilType[][] getSoil() {
+	public char[][] getSoil() {
 		return soil;
 	}
 
-	public void setSoil(SoilType[][] soil) {
+	public void setSoil(char[][] soil) {
 		this.soil = soil;
 	}	
 }

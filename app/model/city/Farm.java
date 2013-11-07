@@ -7,7 +7,7 @@ import enums.EmperiumConstants;
 import enums.GoodsTypeProduction;
 import enums.OwnerType;
 
-public class Farm extends Construction{
+public class Farm extends Construction {
 
 	GoodsTypeProduction typeProduction;
 	int production;
@@ -22,12 +22,27 @@ public class Farm extends Construction{
 		typeProduction = GoodsTypeProduction.rice;
 		production = 36;
 		working=true;
+		timeToBuild = EmperiumConstants.FARM_SECONDS_TO_BUILD;
 	}
+	
+	private int getMaxProduction(Gamer gamer) {
+		int level = gamer.getFarmLevel();
+		
+		if(level == 1) {
+			return 36;
+		} else if(level == 2) {
+			return 120;
+		} else if(level == 3) {
+			return 360;
+		}
+		
+		return 36;
+	}	
 	
 	@Override
 	protected void updateHandle(Gamer gamer, City city) {
 		int force = employed.size()*100/avaliableJobs;
-		produced = (force*production)/100;
+		produced = (force*getMaxProduction(gamer))/100;
 		
 		switch (typeProduction) {
 			case rice:
@@ -42,6 +57,14 @@ public class Farm extends Construction{
 				city.increaseMeat(produced);
 				break;
 				
+			case cotton:
+				city.increaseCotton(gamer, produced);
+				break;
+				
+			case grapes:
+				city.increaseCotton(gamer, produced);
+				break;
+				
 			default:
 				break;
 		}
@@ -54,15 +77,23 @@ public class Farm extends Construction{
 		
 		switch (typeProduction) {
 			case rice:
-				gain = produced * city.getRicePrice(); 
+				gain = produced * city.getRicePrice();
 				break;
 				
 			case beans:
-				gain = produced * city.getRicePrice();
+				gain = produced * city.getBeansPrice();
 				break;
 				
 			case meat:
-				gain = produced * city.getRicePrice();
+				gain = produced * city.getMeatPrice();
+				break;
+				
+			case cotton:
+				gain = produced * city.getCottonPrice();
+				break;
+				
+			case grapes:
+				gain = produced * city.getGrapesPrice();
 				break;
 				
 			default:

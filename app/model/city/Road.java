@@ -1,9 +1,9 @@
 package model.city;
 
-import enums.ConstructionType;
-import enums.OwnerType;
 import model.City;
 import model.Gamer;
+import enums.ConstructionType;
+import enums.OwnerType;
 
 public class Road extends Construction{
 	public Road() {
@@ -11,6 +11,7 @@ public class Road extends Construction{
 		ownerType = OwnerType.national;
 		generalCost = 0;
 		conservationCost = 2;
+		timeToBuild = 0;
 	}
 
 	@Override

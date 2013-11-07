@@ -1,22 +1,25 @@
 package model.city;
 
-import enums.ConstructionType;
-import enums.OwnerType;
 import model.City;
 import model.Gamer;
+import enums.ConstructionType;
+import enums.EmperiumConstants;
+import enums.OwnerType;
 
 public class PolicePost extends Construction{
 	
 	public PolicePost() {
 		type = ConstructionType.PolicePost;
-		conservationCost = 10;
+		conservationCost = EmperiumConstants.POLICE_CONSERVATION_COST;
 		ownerType = OwnerType.national;
 		avaliableJobs = 4;
+		working=true;
+		timeToBuild = EmperiumConstants.POLICE_SECONDS_TO_BUILD;
 	}
 
 	@Override
 	protected void updateHandle(Gamer gamer, City city) {
-		
+		System.out.println("Police HandleUpdate");
 	}
 	
 	@Override

@@ -1,5 +1,6 @@
 @(message: String)
 
+
 <div id="echo"></div>
 
 <div class="container-fluid">
@@ -7,6 +8,7 @@
     <div class="span4">
     	<button onclick="endTurn()">End Turn</button>
     	<button onclick="requestMap()">Show map</button>
+    	<button onclick="increaseIndustryLevel()">[+]Industry level</button>
 
 <div class="tabbable">
   <ul class="nav nav-tabs">
@@ -49,7 +51,7 @@
 				<label>Class</label>
 			    <input id="txtClass" type="text">
 			    
-				<label>Entertainment</label>
+				<label>Ceramics</label>
 			    <input id="txtEntertainment" type="text">
 			    
 				<label>Wine</label>
@@ -110,20 +112,177 @@
     </div>
     <div id="pane2" class="tab-pane">
     <h4>Constructions Pallet</h4>
-    	<button onclick="newHouse()">New House</button>
+    	<button onclick="newRoad()">New Road</button>
+    	
+    	<button onclick="newHouse()">New House</button>    	
+    	<button onclick="newMansion()">New Mansion</button>
+    	
     	<button onclick="newFarmRice()">New Farm Rice</button>
     	<button onclick="newFarmBeans()">New Farm Beans</button>
     	<button onclick="newFarmMeat()">New Farm Meat</button>
     	<button onclick="newFarmGrapes()">New Farm Grapes</button>
-    	<button onclick="newPolice()">New PolicPost</button>
-    	<button onclick="newFireman()">New FiremanPost</button>
+    	<button onclick="newFarmCotton()">New Farm Cotton</button>
+    	<button onclick="newPolicePost()">New PolicPost</button>
+    	<button onclick="newFiremanPost()">New FiremanPost</button>
     	<button onclick="newCloths()">New Cloths Fabric</button>
+    	
+    	<button onclick="newFurniture()">New Furniture</button>
+    	<button onclick="newWineCellar()">New Wine Cellar</button>
+    	
+    	<button onclick="newMineRock()">New Rock Mine</button>
+    	<button onclick="newMineIron()">New Iron Mine</button>
+    	<button onclick="newMineSulfur()">New Sulfur Mine</button>
+    	<button onclick="newMineClay()">New Clay Mine</button>
+    	
+    	<button onclick="newMarket()">New Market</button>
+    	<button onclick="newBank()">New Bank</button>
+    	
+    	<button onclick="newPalace()">New Palace</button>    	
+    	<button onclick="newUniversity()">New University</button>
+    	<button onclick="newSchool()">New School</button>
+    	
+    	
+    	<button onclick="newBarracks()">New Barracks</button>
+    	<button onclick="newShipyard()">New Shipyard</button>
+    	<button onclick="newArchersCamp()">New ArchersCamp</button>
+    	<button onclick="newInfirmary()">New Infirmary</button>
+    	<button onclick="newMachinery()">New Machinery</button>
+    	<button onclick="newKnights()">New Knights Camp</button>
+    	<button onclick="newAirport()">New Airport</button>
+    	
+    	<hr/>
+    	<button style="display:none" class="level1_barracks" onclick="newSwordMan()">New Sword Man</button>
+    	<button style="display:none" class="level2_barracks" onclick="newSpearMan()">New Spear Man</button>
+    	<button style="display:none" class="level2_barracks" onclick="newSling()">New Sling Man</button>
+    	<button style="display:none" class="level5_barracks" onclick="newRifleman()">New Rifle Man</button>
+    	
+    	<hr/>
+    	<button style="display:none" class="knight" onclick="newKnight()">New Knight</button>
+    	<button style="display:none" class="archer" onclick="newArcher()">New Archer</button>
+    	<button style="display:none" class="infirmary" onclick="newInfirmary()">New Infirmary</button>
+    	<button style="display:none" class="catapult" onclick="newCatapult()">New Catapult</button>
+    	<button style="display:none" class="cannon" onclick="newCannon()">New Cannon</button>
+    	
     </div>
     <div id="pane3" class="tab-pane">
-      <h4>Pane 3 Content</h4>
+      		<h4>City Data</h4>
+      
+			<label>Max Population</label>
+		    <input id="txtMaxPopulation" type="text">
+		          		
+			<label>Population</label>
+		    <input id="txtCPopulation" type="text">      		
+      
+			<label>Treasure Contribution</label>
+		    <input id="txtContribution" type="text">
+
+		    <label>Expenses</label>
+		    <input id="txtExpenses" type="text">
+		    
+		    <label>Unemployed</label>
+		    <input id="txtCUnemployed" type="text">		    
+
+		    <label>Jobs</label>
+		    <input id="txtCJobs" type="text">
+		    
+			<label>Ceramics</label>
+		    <input id="txtCEntertainment" type="text">
+		    
+			<label>Wine</label>
+		    <input id="txtCWine" type="text">
+		    
+			<label>Furniture</label>
+		    <input id="txtCFurniture" type="text">
+		    
+			<label>meat</label>
+		    <input id="txtCMeat" type="text">
+		    
+			<label>beans</label>
+		    <input id="txtCBeans" type="text">
+		    
+			<label>rice</label>
+		    <input id="txtCRice" type="text">
+		    
+			<label>cloths</label>
+		    <input id="txtCCloths" type="text">
+		    
+		    <h4>Demand</h4>
+		    
+			<label>Ceramics Demand</label>
+		    <input id="txtDEntertainment" type="text">
+		    
+			<label>Wine Demand</label>
+		    <input id="txtDWine" type="text">
+		    
+			<label>Furniture Demand</label>
+		    <input id="txtDFurniture" type="text">
+		    
+			<label>Meat Demand</label>
+		    <input id="txtDMeat" type="text">
+		    
+			<label>Beans Demand</label>
+		    <input id="txtDBeans" type="text">
+		    
+			<label>Rice Demand</label>
+		    <input id="txtDRice" type="text">
+		    
+			<label>Cloths Demand</label>
+		    <input id="txtDCloths" type="text">		    	      
+			
     </div>
     <div id="pane4" class="tab-pane">
-      <h4>Pane 4 Content</h4>
+      		<h4>Country Data</h4>
+   
+			<label>Max Population</label>
+		    <input id="txtGMaxPopulation" type="text">
+		          		
+			<label>Population</label>
+		    <input id="txtGPopulation" type="text">      		
+      
+			<label>Treasure</label>
+		    <input id="txtGTreasure" type="text">
+
+		    <label>Expenses</label>
+		    <input id="txtGExpenses" type="text">
+		    
+		    <label>Unemployed</label>
+		    <input id="txtGUnemployed" type="text">		    
+
+		    <label>Jobs</label>
+		    <input id="txtGJobs" type="text">
+		    
+			<label>Ceramics</label>
+		    <input id="txtGEntertainment" type="text">
+		    
+			<label>Wine</label>
+		    <input id="txtGWine" type="text">
+		    
+			<label>Furniture</label>
+		    <input id="txtGFurniture" type="text">
+		    
+			<label>meat</label>
+		    <input id="txtGMeat" type="text">
+		    
+			<label>beans</label>
+		    <input id="txtGBeans" type="text">
+		    
+			<label>rice</label>
+		    <input id="txtGRice" type="text">
+		    
+			<label>cloths</label>
+		    <input id="txtGCloths" type="text">
+		    
+			<label>Iron</label>
+		    <input id="txtGIron" type="text">
+		    		    
+			<label>Sulfur</label>
+		    <input id="txtGSulfur" type="text">
+		    		    
+			<label>Rock</label>
+		    <input id="txtGRock" type="text">
+		    		    
+			<label>Cotton</label>
+		    <input id="txtGCotton" type="text">		    
     </div>
   </div><!-- /.tab-content -->
 </div>
@@ -138,606 +297,37 @@
   </div>
 </div>
 
-
+<script src="@routes.Assets.at("javascripts/app.js")" type="text/javascript"></script>
 <script>
-var stage;
-var canvas;
-var screePosition=[];
-var soil_blocks = [];
-var city;
-var cursor;
-var typesProd;
-
-var create = false;
-var createWhat = "";
-
-$( document ).ready(function() {
-	init();
-});
-
-
-function initializeScreePosition() {
-	max = 20;
-	i = 0;
-	j=0;	
-	for(i=1;i<=max;i++) {
-		for(j=1;j<=max;j++) {
-			x_ = i * 32;
-			y_= j * 32;
-			screePosition.push({x:x_, y:y_});
-		}
+var ws = new WebSocket("@routes.CityController.map().webSocketURL(request)");
+ws.onopen = function() {
+};
+ws.onmessage = function(evt) {
+	var received_msg = evt.data;
+	
+	console.log(received_msg);
+	var localdata = JSON.parse(received_msg);
+	
+	if(localdata.name == "GameCityData") {
+	
+		if(localdata.city) {
+			city = localdata.city;
+			processMap();
+		} 
+		
+		if(localdata.gamer) {
+			country = localdata.gamer;
+			showCountryState();
+		}				
+	} else if(localdata.name == "Error") {
+		alert("Error: " + localdata.error);
+		console.debug(localdata);
+	} else if(localdata.name == "created_warrior") {
+		processCreateWarrior(localdata);
 	}
-}
-
-function init() {
-	
-	initializeScreePosition();
-	
-	stage = new createjs.Stage("mainCanvas");
-	stage.enableMouseOver(20);
-	canvas = document.getElementById("mainCanvas");
-  	createjs.Ticker.addEventListener("tick", tick);
-  	
-  	createCursor();
-}
-
-function tick(event) {
-	calculateCursorPosition(stage.mouseX, stage.mouseY);
-	
-	stage.update(event);	
-}
-
-function createCursor() {
-	var g = new createjs.Graphics(); 
-	g.setStrokeStyle(1); 
-	g.beginStroke(createjs.Graphics.getRGB(0,0,0)); 
-	g.beginFill(createjs.Graphics.getRGB(255,255,0)); 
-	g.drawRect(0,0,32,32);
-	
-	cursor = new createjs.Shape(g);
-	cursor.x = 0;
-	cursor.y = 0;
-    
-	cursor.addEventListener("click", function (event) {
-		if(create) {			
-			sendCreateConstruction([event.target.x/32, event.target.y/32]);
-			create = false;
-			createWhat = "";
-			adjustCursor(32,32,[255,255,0]);
-		}		
-    });	
-	
-    stage.addChild(cursor);
-}
-
-function adjustCursor(w,h, color) {
-	var g = new createjs.Graphics(); 
-	g.setStrokeStyle(1); 
-	g.beginStroke(createjs.Graphics.getRGB(0,0,0)); 
-	g.beginFill(createjs.Graphics.getRGB(color[0],color[1],color[2])); 
-	g.drawRect(0,0,w,h);
-	
-    cursor.set({graphics:g});    
-}
-
-function calculateCursorPosition(x, y) {
-	
-	var x_ = Math.floor(x/32)*32;
-	var y_ = Math.floor(y/32)*32;
-	
-	cursor.x = x_;
-	cursor.y = y_;
-}
-
-function createBlank(x, y) {	
-	
-	var px = x*32;
-	var py = y*32;
-	
-	var g = new createjs.Graphics(); 
-	g.setStrokeStyle(1); 
-	g.beginStroke(createjs.Graphics.getRGB(0,0,0)); 
-	g.beginFill(createjs.Graphics.getRGB(255,255,255)); 
-	g.drawRect(0,0,32,32);
-	
-	var s = new createjs.Shape(g);
-    s.x = px;
-    s.y = py;
-	s.addEventListener("rollover", function (event) {
-				
-		/*var g = new createjs.Graphics();
-		g.setStrokeStyle(1); 
-		if(create) {
-			g.beginStroke(createjs.Graphics.getRGB(0,0,0)); 
-			g.beginFill(createjs.Graphics.getRGB(0,255,0));
-		} else {
-			g.beginStroke(createjs.Graphics.getRGB(0,0,0)); 
-			g.beginFill(createjs.Graphics.getRGB(255,255,0));
-		}
-		g.drawRect(0,0,32,32);
-		
-		event.target.set({graphics:g});*/
-    });		
-	s.addEventListener("rollout", function (event) {
-		/*var g = new createjs.Graphics();
-		g.setStrokeStyle(1); 
-		g.beginStroke(createjs.Graphics.getRGB(0,0,0)); 
-		g.beginFill(createjs.Graphics.getRGB(255,255,255)); 
-		g.drawRect(0,0,32,32);*/
-		
-		event.target.set({graphics:g});
-    });
-	s.addEventListener("click", function (event) {
-		/*if(create) {			
-			sendCreateConstruction([event.target.col, event.target.row]);
-			create = false;
-			createWhat = ""
-		}*/
-    });
-	
-	s.set({
-		col: x,
-		row: y
-	});
-	
-  	stage.addChild(s);
-  	
-  	if(!soil_blocks[y])
-  		soil_blocks[y] = [];
-
-  	soil_blocks[y].push(s);
-}
-
-function showEstadoConstruction(event) {
-	var constru = null;
-
-		if(event.target.construction_type == "House") {
-		try {
-				constru = city.constructions.houses[event.target.construction_index];
-			} catch (e) {
-			}
-		} else 
-		if (event.target.construction_type == "Farm") {
-			try {
-				constru = city.constructions.farms[event.target.construction_index];
-			} catch (e) {
-			}
-		}else
-		if (event.target.construction_type == "PolicePost") {
-			try {
-				constru = city.constructions.policePosts[event.target.construction_index];
-			} catch (e) {
-			}
-		} else
-		if (event.target.construction_type == "FiremanPost") {
-			try {
-				constru = city.constructions.firemanPosts[event.target.construction_index];
-			} catch (e) {
-			}
-		} else
-		if (event.target.construction_type == "Cloths") {
-			try {
-				constru = city.constructions.cloths[event.target.construction_index];
-			} catch (e) {
-			}
-		}
-				
-		document.getElementById("txtType").value = constru.type;
-		document.getElementById("txtOwnerType").value = constru.ownerType;
-		document.getElementById("txtJobs").value = constru.avaliableJobs;
-		document.getElementById("txtEmployed").value = constru.employed.length;
-		document.getElementById("txtConservation").value = constru.conservation;
-		document.getElementById("txtBuilt").value = constru.built;
-		document.getElementById("txtClass").value = constru.familyClass;
-		document.getElementById("txtSavings").value = constru.savings;
-		document.getElementById("txtCost").value = constru.generalCost + constru.conservationCost;
-
-		document.getElementById("houseDiv").style.display = "none";
-		document.getElementById("farmDiv").style.display = "none";
-		if(constru.type == "House") {
-			
-			document.getElementById("txtEntertainment").value = constru.entertainment;
-			document.getElementById("txtWine").value = constru.wine;
-			document.getElementById("txtFurniture").value = constru.furniture;
-			document.getElementById("txtMeat").value = constru.meat;
-			document.getElementById("txtBeans").value = constru.beans;
-			document.getElementById("txtRice").value = constru.rice;
-			document.getElementById("txtCloths").value = constru.cloths;
-			document.getElementById("txtCitizenActive").value = constru.citizens.length;
-			document.getElementById("txtCitizenChild").value = constru.citizenChild;
-			document.getElementById("txtWithaJob").value = constru.withaJob;
-			document.getElementById("txtSatisfaction").value = constru.satisfaction;
-			document.getElementById("houseDiv").style.display = "block";
-			
-		} else if(constru.type == "PolicePost") {
-			
-		} else if(constru.type == "FiremanPost") {
-			
-		} else if(constru.type == "Farm") {
-			
-			document.getElementById("txtProduced").value = constru.produced;
-			document.getElementById("txtMaxProduction").value = constru.production;
-			document.getElementById("txtTypeProduction").value = constru.typeProduction;
-			
-		    document.getElementById("farmDiv").style.display = "block";
-		    
-		} else if(constru.type == "Cloths") {
-			
-			document.getElementById("txtProduced").value = constru.produced;
-			document.getElementById("txtMaxProduction").value = constru.production;
-			document.getElementById("txtTypeProduction").value = constru.typeProduction;
-			
-		    document.getElementById("farmDiv").style.display = "block";
-		}
-
-	}
-
-	function createShape(constru, index, color1, color2, onclick, w, h) {
-
-		var w_ = w;
-		var h_ = h;
-		
-		if(!w) {
-			w_ = 32;
-			h_ = 32;
-		}
-					
-		var g = new createjs.Graphics();
-		g.setStrokeStyle(1);
-		g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
-		g.beginFill(createjs.Graphics.getRGB(color1[0], color1[1], color1[2]));
-		g.drawRect(0, 0, w_, h_);
-
-		var s = new createjs.Shape(g);
-		s.x = px;
-		s.y = py;
-		s.addEventListener("rollover", function(event) {
-			var g = new createjs.Graphics();
-			g.setStrokeStyle(1);
-			g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
-			g.beginFill(createjs.Graphics.getRGB(color2[0], color2[1],
-					color2[2]));
-			g.drawRect(0, 0, w_, h_);
-
-			event.target.set({
-				graphics : g
-			});
-		});
-		s.addEventListener("rollout", function(event) {
-			var g = new createjs.Graphics();
-			g.setStrokeStyle(1);
-			g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
-			g.beginFill(createjs.Graphics.getRGB(color1[0], color1[1],
-					color1[2]));
-			g.drawRect(0, 0, w_, h_);
-
-			event.target.set({
-				graphics : g
-			});
-		});
-
-		s.addEventListener("click", function(event) {
-			onclick(event)
-		});
-
-		s.set({
-			construction_index : index,
-			construction_type: constru.type
-		});
-
-		return s;
-	}
-
-	function createHouse(data, index) {
-
-		px = data.mapSlots[0].x * 32;
-		py = data.mapSlots[0].y * 32;
-		var color = [ 213, 255, 213 ];
-		
-		if(data.conservation < 50) {
-			color = [ 255, 0, 0 ];
-		} else if(data.conservation <= 0) {
-			if(!data.cleaned) {
-				color = [ 0, 0, 0 ];
-			} else {
-				color = [ 249, 249, 249 ];
-			}
-		}
-		
-		var text = new createjs.Text(data.familyClass, "16px Arial", "#000000");
-		text.x = px;
-		text.y = py;		
-		
-		var s = createShape(data, index, color, [ 255, 159, 159 ], showEstadoConstruction);
-		s.x = px;
-		s.y = py;
-		stage.addChild(s);
-		stage.addChild(text);
-	}
-
-	function createRoad(data, index) {
-		px = data.mapSlots[0].x * 32;
-		py = data.mapSlots[0].y * 32;
-
-		var g = new createjs.Graphics();
-		g.setStrokeStyle(1);
-		g.beginStroke(createjs.Graphics.getRGB(255, 204, 102));
-		g.beginFill(createjs.Graphics.getRGB(255, 204, 102));
-		g.drawRect(0, 0, 32, 32);
-
-		var s = new createjs.Shape(g);
-		s.x = px;
-		s.y = py;
-		s.addEventListener("rollover", function(event) {
-			var g = new createjs.Graphics();
-			g.setStrokeStyle(1);
-			g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
-			g.beginFill(createjs.Graphics.getRGB(255, 231, 182));
-			g.drawRect(0, 0, 32, 32);
-
-			event.target.set({
-				graphics : g
-			});
-		});
-		s.addEventListener("rollout", function(event) {
-			var g = new createjs.Graphics();
-			g.setStrokeStyle(1);
-			g.beginStroke(createjs.Graphics.getRGB(255, 204, 102));
-			g.beginFill(createjs.Graphics.getRGB(255, 204, 102));
-			g.drawRect(0, 0, 32, 32);
-
-			event.target.set({
-				graphics : g
-			});
-		});
-
-		stage.addChild(s);
-	}
-
-	function createPolice(data, index) {
-		
-		px = data.mapSlots[0].x * 32;
-		py = data.mapSlots[0].y * 32;
-		var color = [ 91, 113, 255 ];
-		
-		if(data.conservation < 50) {
-			color = [ 91, 113, 255 ];
-		} else if(data.conservation <= 0) {
-			if(!data.cleaned) {
-				color = [ 0, 0, 0 ];
-			} else {
-				color = [ 249, 249, 249 ];
-			}
-		}
-		
-		var text = new createjs.Text("PO", "16px Arial", "#000000");
-		text.x = px;
-		text.y = py;		
-		
-		var s = createShape(data, index, color, [ 169, 181, 255 ], showEstadoConstruction);
-		s.x = px;
-		s.y = py;
-		stage.addChild(s);
-		stage.addChild(text);		
-	}
-
-	function createFireMan(data, index) {
-		
-		px = data.mapSlots[0].x * 32;
-		py = data.mapSlots[0].y * 32;
-		var color = [ 230, 255, 0 ];
-		
-		if(data.conservation < 50) {
-			color = [ 255, 0, 0 ];
-		} else if(data.conservation <= 0) {
-			if(!data.cleaned) {
-				color = [ 0, 0, 0 ];
-			} else {
-				color = [ 249, 249, 249 ];
-			}
-		}
-		
-		var text = new createjs.Text("Fireman", "16px Arial", "#000000");
-		text.x = px;
-		text.y = py;		
-		
-		var s = createShape(data, index, color, [ 230, 255, 255 ], showEstadoConstruction, 32, 32);
-		s.x = px;
-		s.y = py;
-		stage.addChild(s);
-		stage.addChild(text);		
-	}
-
-	function createFarm(data, index) {
-		
-		px = data.mapSlots[0].x * 32;
-		py = data.mapSlots[0].y * 32;
-		var color = [ 36, 182, 0 ];
-		
-		if(data.conservation < 50) {
-			color = [ 255, 0, 0 ];
-		} else if(data.conservation <= 0) {
-			if(!data.cleaned) {
-				color = [ 0, 0, 0 ];
-			} else {
-				color = [ 249, 249, 249 ];
-			}
-		}
-		
-		var text = new createjs.Text("Farm", "16px Arial", "#000000");
-		text.x = px;
-		text.y = py;		
-		
-		var s = createShape(data, index, color, [ 169, 181, 255 ], showEstadoConstruction, 64, 96);
-		s.x = px;
-		s.y = py;
-		stage.addChild(s);
-		stage.addChild(text);			
-	}
-
-	function createCloths(data, index) {
-		
-		px = data.mapSlots[0].x * 32;
-		py = data.mapSlots[0].y * 32;
-		var color = [ 255, 85, 85 ];
-		
-		if(data.conservation < 50) {
-			color = [ 255, 0, 0 ];
-		} else if(data.conservation <= 0) {
-			if(!data.cleaned) {
-				color = [ 0, 0, 0 ];
-			} else {
-				color = [ 255, 51, 204 ];
-			}
-		}
-		
-		var text = new createjs.Text("Cloths", "16px Arial", "#000000");
-		text.x = px;
-		text.y = py;		
-		
-		var s = createShape(data, index, color, [ 80, 80, 80 ], showEstadoConstruction, 64, 64);
-		s.x = px;
-		s.y = py;
-		stage.addChild(s);
-		stage.addChild(text);			
-	}	
-	
-	function processMap() {
-		soil_blocks = [];
-		stage.removeAllChildren();		
-		
-		i = 0;
-		j = 0;
-
-		for (i = 0; i < 20; i++) {
-			for (j = 0; j < 20; j++) {
-				createBlank(j, i);
-			}
-		}
-		
-		createCursor();
-
-		for (i = 0; i < city.constructions.roads.length; i++) {
-			createRoad(city.constructions.roads[i], i);
-		}
-
-		for (i = 0; i < city.constructions.houses.length; i++) {
-			createHouse(city.constructions.houses[i], i);
-		}
-
-		for (i = 0; i < city.constructions.farms.length; i++) {
-			createFarm(city.constructions.farms[i], i);
-		}
-		
-		for (i = 0; i < city.constructions.cloths.length; i++) {
-			createCloths(city.constructions.cloths[i], i);
-		}
-
-		for (i = 0; i < city.constructions.firemanPosts.length; i++) {
-			createFireMan(city.constructions.firemanPosts[i], i);
-		}
-
-		for (i = 0; i < city.constructions.policePosts.length; i++) {
-			createPolice(city.constructions.policePosts[i], i);
-		}
-				
-	}
-
-	var ws = new WebSocket("@routes.CityController.map().webSocketURL(request)");
-	ws.onopen = function() {
-	};
-	ws.onmessage = function(evt) {
-		var received_msg = evt.data;
-		//document.getElementById("echo").innerHTML = ""+received_msg;
-		console.log(received_msg);
-		city = JSON.parse(received_msg);
-		processMap();
-
-	};
-	ws.onclose = function() {
-		// websocket is closed.
-		console.debug("Connection is closed...");
-	};
-
-	function requestMap() {
-		showmap = {
-			name : "showmap"
-		}
-
-		ws.send(JSON.stringify(showmap));
-	}
-	
-	function endTurn() {
-		endturn = {
-			name : "end_turn"
-		}
-
-		ws.send(JSON.stringify(endturn));
-	}
-	
-	//CREATE NEW CONSTRUCTION
-	
-	function newHouse() {
-		create = true;
-		createWhat = "House";
-		adjustCursor(32,32,[100,100,100]);
-	}
-	
-	function newFiremanPost() {
-		create = true;
-		createWhat = "FiremanPost";
-		adjustCursor(32,32,[100,100,100]);
-	}	
-
-	function newPolicePost() {
-		create = true;
-		createWhat = "PolicePost";
-		adjustCursor(32,32,[100,100,100]);
-	}
-	
-	function newCloths() {
-		create = true;
-		createWhat = "Cloths";
-		adjustCursor(64,64,[100,100,100]);
-	}	
-	
-	function newFarmRice() {
-		create = true;
-		createWhat = "Farm";
-		adjustCursor(64,64,[100,100,100]);
-		typesProd = "rice"; 
-	}
-	
-	function newFarmGrapes() {
-		create = true;
-		createWhat = "Farm";
-		adjustCursor(64,64,[100,100,100]);
-		typesProd = "grapes"; 
-	}
-	
-	function newFarmMeat() {
-		create = true;
-		createWhat = "Farm";
-		adjustCursor(64,64,[100,100,100]);
-		typesProd = "meat"; 
-	}
-	
-	function newFarmBeans() {
-		create = true;
-		createWhat = "Farm";
-		adjustCursor(64,64,[100,100,100]);
-		typesProd = "beans"; 
-	}
-	
-	function sendCreateConstruction(pos) {
-		var create = {
-			name: "create",
-			type: createWhat,
-			position:pos,
-			id: city.id,
-			prodType: typesProd
-		}
-		
-		ws.send(JSON.stringify(create));
-	}
+};
+ws.onclose = function() {
+	// websocket is closed.
+	console.debug("Connection is closed...");
+};
 </script>

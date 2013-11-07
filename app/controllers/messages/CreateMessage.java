@@ -1,9 +1,8 @@
 package controllers.messages;
 
-import org.bson.types.ObjectId;
-
 import enums.ConstructionType;
 import enums.GoodsTypeProduction;
+import enums.MineType;
 
 /**
  * A message from the client.
@@ -16,6 +15,7 @@ public class CreateMessage {
 	String id;
 	ConstructionType type;
 	GoodsTypeProduction prodType;
+	MineType mineType;
 	int[] position;
 	
 	public String getId() {
@@ -47,5 +47,11 @@ public class CreateMessage {
 	}
 	public void setProdType(GoodsTypeProduction prodType) {
 		this.prodType = prodType;
+	}
+	public MineType getMineType() {
+		return mineType;
+	}
+	public void setMineType(MineType mineType) {
+		this.mineType = mineType;
 	}
 }

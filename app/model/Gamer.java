@@ -16,20 +16,26 @@ public class Gamer {
 	 * Resources 
 	 */
 	int iron = 100;
+	int clay = 100;
 	int wood = 100;
 	int sulfur = 100;
 	int rock = 100;
+	int cotton = 100;
+	int grapes = 100;
+	
+	int knowledge = 0;
 	
 	/**
 	 * Goods total monthly production (from every city)
 	 */
-	long entertainment = 1000;//AA
+	long ceramics = 1000;//AA
 	long wine = 1000;//A 
 	long furniture;//BA
 	long meat = 1000;//B
 	long beans = 1000;//C
 	long rice = 1000;//D
 	long cloths = 1000;//D
+	
 	
 	/**
 	 * If the gamer will spend money for conservation of public buildings
@@ -64,6 +70,19 @@ public class Gamer {
 	boolean divorce;
 
 	Research researchs = new Research();
+	
+	long population;
+	
+	long maxPopulation;
+	
+	int industryLevel = 1;	
+	int mineRockLevel = 1;
+	int mineIronLevel = 1;
+	int mineSulfurLevel = 1;
+	int mineClayLevel = 1;
+	int woodLevel = 1;
+	
+	int farmLevel = 1;
 	
 	public ObjectId getId() {
 		return id;
@@ -147,6 +166,19 @@ public class Gamer {
 		}
 	}	
 	
+	public void resetPopulation() {
+		population = 0;
+		maxPopulation = 0;
+	}
+	
+	public void increasePopulation(long pop) {
+		population += pop;
+	}
+	
+	public void increaseMaxPopulation(long pop) {
+		maxPopulation += pop;
+	}
+	
 	public void setTreasure(long treasure) {
 		this.treasure = treasure;
 	}
@@ -191,9 +223,12 @@ public class Gamer {
 		this.blockInfrastructure = blockInfrastructure;
 	}
 	
+	/**
+	 * Goods is by city
+	 */
 	public void resetGoods() {
 		
-		this.entertainment = 0;
+		this.ceramics = 0;
 		this.wine = 0; 
 		this.meat = 0;
 		this.beans = 0;
@@ -202,16 +237,16 @@ public class Gamer {
 		this.furniture = 0;
 	}
 
-	public long getEntertainment() {
-		return entertainment;
+	public long getCeramics() {
+		return ceramics;
 	}
 
-	public void setEntertainment(long entertainment) {
-		this.entertainment = entertainment;
+	public void setCeramics(long entertainment) {
+		this.ceramics = entertainment;
 	}
 
-	public void increaseEntertainment(long l) {
-		this.entertainment += l;
+	public void increaseCeramics(long l) {
+		this.ceramics += l;
 	}
 	
 	public long getWine() {
@@ -322,5 +357,253 @@ public class Gamer {
 
 	public void setResearchs(Research researchs) {
 		this.researchs = researchs;
+	}
+
+	public long getPopulation() {
+		return population;
+	}
+
+	public void setPopulation(long population) {
+		this.population = population;
+	}
+
+	public long getMaxPopulation() {
+		return maxPopulation;
+	}
+
+	public void setMaxPopulation(long maxPopulation) {
+		this.maxPopulation = maxPopulation;
+	}
+
+	public int getCotton() {
+		return cotton;
+	}
+
+	public void setCotton(int cotton) {
+		this.cotton = cotton;
+	}
+
+	public int getIndustryLevel() {
+		return industryLevel;
+	}
+
+	public void setIndustryLevel(int industryLevel) {
+		this.industryLevel = industryLevel;
+	}
+
+	public int getMineRockLevel() {
+		return mineRockLevel;
+	}
+
+	public void setMineRockLevel(int mineRockLevel) {
+		this.mineRockLevel = mineRockLevel;
+	}
+
+	public int getMineIronLevel() {
+		return mineIronLevel;
+	}
+
+	public void setMineIronLevel(int mineIronLevel) {
+		this.mineIronLevel = mineIronLevel;
+	}
+
+	public int getMineSulfurLevel() {
+		return mineSulfurLevel;
+	}
+
+	public void setMineSulfurLevel(int mineSulfurLevel) {
+		this.mineSulfurLevel = mineSulfurLevel;
+	}
+
+	public int getClay() {
+		return clay;
+	}
+
+	public void setClay(int clay) {
+		this.clay = clay;
+	}
+
+	public int getMineClayLevel() {
+		return mineClayLevel;
+	}
+
+	public void setMineClayLevel(int mineClayLevel) {
+		this.mineClayLevel = mineClayLevel;
+	}
+
+	public int getWoodLevel() {
+		return woodLevel;
+	}
+
+	public void setWoodLevel(int woodLevel) {
+		this.woodLevel = woodLevel;
+	}
+
+	public int getFarmLevel() {
+		return farmLevel;
+	}
+
+	public void setFarmLevel(int farmLevel) {
+		this.farmLevel = farmLevel;
+	}
+
+	public void increaseCotton(int cotton) {
+		this.cotton += cotton;
+	}
+	
+	public int decreaseCotton(int cotton) {
+		int ret = 0;
+		
+		if(this.cotton > cotton) {
+			this.cotton -= cotton;
+			ret = cotton;
+		} else {
+			ret = this.cotton;
+			this.cotton=0;
+		}
+		
+		return ret;	
+	}
+	
+	public void increaseWood(int wood) {
+		this.wood += wood;
+	}
+	
+	public int decreaseWood(int wood) {
+		int ret = 0;
+		
+		if(this.wood > wood) {
+			this.wood -= wood;
+			ret = wood;
+		} else {
+			ret = this.wood;
+			this.wood=0;
+		}
+		
+		return ret;	
+	}
+	
+	public void increaseClay(int c) {
+		this.clay += c;
+	}
+	
+	public int decreaseClay(int c) {
+		int ret = 0;
+		
+		if(this.clay > c) {
+			this.clay -= c;
+			ret = c;
+		} else {
+			ret = this.clay;
+			this.clay=0;
+		}
+		
+		return ret;	
+	}	
+	
+	public void increaseIron(int iron) {
+		this.iron += iron;
+	}
+	
+	public int decreaseIron(int iron) {
+		int ret = 0;
+		
+		if(this.iron > iron) {
+			this.iron -= iron;
+			ret = iron;
+		} else {
+			ret = this.iron;
+			this.iron=0;
+		}
+		
+		return ret;	
+	}	
+	
+	public void increaseRock(int rock) {
+		this.rock += rock;
+	}
+	
+	public int decreaseRock(int rock) {
+		int ret = 0;
+		
+		if(this.rock > rock) {
+			this.rock -= rock;
+			ret = rock;
+		} else {
+			ret = this.rock;
+			this.rock=0;
+		}
+		
+		return ret;	
+	}	
+	
+	public void increaseSulfur(int rock) {
+		this.sulfur += sulfur;
+	}
+	
+	public int decreaseSulfur(int sulfur) {
+		int ret = 0;
+		
+		if(this.sulfur > sulfur) {
+			this.sulfur -= sulfur;
+			ret = sulfur;
+		} else {
+			ret = this.sulfur;
+			this.sulfur=0;
+		}
+		
+		return ret;	
+	}	
+
+	public void increaseKnowledge(int val) {
+		this.knowledge += val;
+	}	
+
+	public int decreaseKnowledge(int val) {
+		int ret = 0;
+		
+		if(this.knowledge > val) {
+			this.knowledge -= val;
+			ret = val;
+		} else {
+			ret = this.knowledge;
+			this.knowledge=0;
+		}
+		
+		return ret;	
+	}	
+	
+	public void increaseGrapes(int grapes) {
+		this.grapes += grapes;
+	}
+	
+	public int decreaseGrapes(int grapes) {
+		int ret = 0;
+		
+		if(this.grapes > grapes) {
+			this.grapes -= grapes;
+			ret = grapes;
+		} else {
+			ret = this.grapes;
+			this.grapes=0;
+		}
+		
+		return ret;	
+	}
+	
+	public int getGrapes() {
+		return grapes;
+	}
+	
+	public void setGrapes(int grapes) {
+		this.grapes = grapes;
+	}
+
+	public int getKnowledge() {
+		return knowledge;
+	}
+
+	public void setKnowledge(int knowledge) {
+		this.knowledge = knowledge;
 	}
 }

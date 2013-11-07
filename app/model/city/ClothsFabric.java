@@ -22,13 +22,26 @@ public class ClothsFabric extends Construction{
 		typeProduction = GoodsTypeProduction.cloths;
 		production = 48;
 		working=true;
+		timeToBuild = EmperiumConstants.INDUSTRY_SECONDS_TO_BUILD;
 	}
 	
 	@Override
 	protected void updateHandle(Gamer gamer, City city) {
 		int force = employed.size()*100/avaliableJobs;
 		produced = (force*production)/100;
+		
+		int cotton = gamer.getCotton();
+		
+		if(cotton > 0 && cotton < produced) {
+			produced = cotton;
+		} else if(cotton <= 0) {
+			produced = 0;
+			return;
+		}
+		
+		city.decreaseCotton(gamer, produced);
 		city.increaseCloths(produced);
+		
 	}
 	
 	protected void calculateSavingsTaxes(Gamer gamer, City city) {		
@@ -49,11 +62,17 @@ public class ClothsFabric extends Construction{
 	@Override
 	public boolean acceptEmploee(Gamer gamer, City city, Citizen citizen) {
 		
+		if(gamer.getCotton() <= 0) {
+			return false;
+		}
+		
 		if(gamer.getResearchs().getIndustryLevel() > 0) {
 			switch(citizen.familyClass) {
 				case C:
 					return true;
 				case B:
+					return true;
+				case D:
 					return true;
 				default:
 			}

@@ -8,6 +8,11 @@ public interface EmperiumConstants {
 	
 	int FARM_CONSERVATION_COST = 16;
 	int CLOTHS_CONSERVATION_COST = 8;
+	int FURNITURE_CONSERVATION_COST = 8;
+	int SCHOOL_CONSERVATION_COST = 16;
+	int UNIVERSITY_CONSERVATION_COST = 16;
+	int MINE_CONSERVATION_COST = 16;
+	int INDUSTRY_CONSERVATION_COST = 16;
 	
 	int HOUSE_CONSERVATION_COST_D = 2;
 	int HOUSE_CONSERVATION_COST_C = 10;
@@ -16,32 +21,68 @@ public interface EmperiumConstants {
 	int HOUSE_CONSERVATION_COST_A = 400;
 	int HOUSE_CONSERVATION_COST_AA = 800;
 	
+	int POLICE_CONSERVATION_COST = 50;
+	int FIREMAN_CONSERVATION_COST = 50;
+	
+	int BARRACKS_CONSERVATION_COST = 100;
+	int INFIRMARY_CONSERVATION_COST = 150;
+	int KNIGHTS_CONSERVATION_COST = 250;
+	int ARCHER_CAMP_CONSERVATION_COST = 150;
+	int MACHINERY_CONSERVATION_COST = 350;
+	
+	int SAND_SOIL_PRICE = 100;
+	int CLAY_SOIL_PRICE = 150;
+	int ROCK_SOIL_PRICE = 200;
+	
+	int CERAMIC_PRICE = 100;//AA
+	int KNOWLEDGE_PRICE = 100;//AA
+	int WINE_PRICE = 37;//A 
+	int FURNITURE_PRICE = 14;//BA
+	int MEAT_PRICE = 11;//B
+	int BEANS_PRICE = 8;//C
+	int RICE_PRICE = 3;//D
+	int CLOTHS_PRICE = 1;//D	
+	int GRAPES_PRICE = 8;	
+	int COTTON_PRICE = 8;		
+	
 	int INDUSTRY_LEVEL_1 = 0;
 	int INDUSTRY_LEVEL_2 = 1;
 	int INDUSTRY_LEVEL_3 = 2;
 	
 	int CITIZEN_NOT_WORK = -1;
 	
-	/**
-	 * 	int SalaryAA = 1620;1458
-	int SalaryA = 540;486
-	int SalaryBA = 180;162
-	int SalaryB = 90;9
-	int SalaryC = 30;27
-	int SalaryD = 10;9
+	int FARM_SECONDS_TO_BUILD = 60;
+	int POLICE_SECONDS_TO_BUILD = 60;
+	int FIREMAN_SECONDS_TO_BUILD = 60;
+	int HOUSE_SECONDS_TO_BUILD = 60;
+	int INDUSTRY_SECONDS_TO_BUILD = 60;
+	int SCHOOL_SECONDS_TO_BUILD = 30;
+	int UNIVERSITY_SECONDS_TO_BUILD = 60;
+	int MINE_SECONDS_TO_BUILD = 30;
 	
-	long entertainmentPrice = 100;//AA = 177
-	long winePrice = 37;//A = 77
-	long furniturePrice = 14;//BA = 40
-	long meatPrice = 11;//B = 26
-	long beansPrice = 8;//C = 15
-	long ricePrice = 3;//D = 7
-	long clothsPrice = 1;//D
-		
-	 */
-	int SECONDS_TO_BUILD = 2;
+	int BARRACKS_TIME_TO_BUILD = 60;
+	int INFIRMARY_TIME_TO_BUILD = 60;
+	int KNIGHTS_TIME_TO_BUILD = 60;
+	int ARCHER_CAMP_TIME_TO_BUILD = 60;
+	int MACHINERY_TIME_TO_BUILD = 60;	
+	
+	int ROCK_PRICE = 6;
+	int CLAY_PRICE = 6;
+	int IRON_PRICE = 6;
+	int SULFUR_PRICE = 6;
+	int WOOD_PRICE = 6; 
+
+	int MAX_MINE_ROCK = 3;
+	int MAX_MINE_IRON = 3;
+	int MAX_MINE_SULFUR = 3;
+	int MAX_MINE_WOOD = 3;	
 	
 	String SHOW_MAP_MESSAGE_NAME = "showmap";
 	String END_TURN_MESSAGE_NAME = "end_turn";
 	String CREATE_MESSAGE_NAME = "create";
+	String INCREASE_INDUSTRY_LEVEL = "increase_industry_level";
+	String CREATE_WARRIOR = "create_warrior";
+	
+//	//TAXES
+//	int EDUCATION_TAX = 10;	//TODO it to remove all taxes to here
 }

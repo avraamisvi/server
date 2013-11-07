@@ -1,20 +1,30 @@
 package enums;
 
 public enum ConstructionType {
-	 Barracks
-	,Building
-	,Construction
+	  
+	  Barracks
+	 ,ArcherCamp
+	 ,Machinery
+	 ,Shipyard
+	 ,Knights
+	 ,Infirmary
+	 ,Airport
+	 
+	,Bank
+	,Cloths
 	,FiremanPost
 	,House
 	,Mansion
+	,Mine
+	,Market
 	,Palace
 	,PolicePost
-	,Temple
 	,Road
-	,Hospital
-	,Industry
 	,Farm
-	,Busisness
-	,Cloths
+	,Furniture
+	,WineCellar
+	,LumberJack
+	,University
+	,School
 	,none
 }

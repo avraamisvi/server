@@ -12,6 +12,7 @@ import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.query.UpdateOperations;
 
 import repository.CityMorphiaRepository;
+import repository.UtilRepository;
 import services.CityLogicService;
 
 import com.mongodb.Mongo;
@@ -30,7 +31,7 @@ public class CityTest {
 		Mongo mongo = new Mongo();
 		//Datastore ds = morphia.createDatastore(, "empire");
 		
-		CityMorphiaRepository repo = new CityMorphiaRepository(mongo, morphia);
+		CityMorphiaRepository repo = new CityMorphiaRepository(UtilRepository.getDataStore());
 		
 		while(!exit) {
 			try {
